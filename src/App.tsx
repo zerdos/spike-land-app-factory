@@ -1,8 +1,33 @@
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, Component, type ReactNode, type ErrorInfo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+class ErrorBoundary extends Component<{ children: ReactNode; onReset: () => void }, { error: string | null }> {
+  state = { error: null as string | null };
+  static getDerivedStateFromError(err: Error) { return { error: err.message }; }
+  componentDidCatch(err: Error, info: ErrorInfo) { console.error("Preview error:", err, info); }
+  componentDidUpdate(prev: { children: ReactNode }) {
+    if (prev.children !== this.props.children) this.setState({ error: null });
+  }
+  render() {
+    if (this.state.error) return (
+      <Card className="m-4">
+        <CardHeader>
+          <CardTitle className="text-destructive">Render Error</CardTitle>
+          <CardDescription>{this.state.error}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant="outline" onClick={() => { this.setState({ error: null }); this.props.onReset(); }}>
+            Back to List
+          </Button>
+        </CardContent>
+      </Card>
+    );
+    return this.props.children;
+  }
+}
 
 // Dynamic imports for all templates
 const templates = {
@@ -83,15 +108,17 @@ function App() {
                   </Button>
                 </div>
                 <div className="rounded-lg border">
-                  <Suspense
-                    fallback={
-                      <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
-                      </div>
-                    }
-                  >
-                    {SelectedComponent && <SelectedComponent />}
-                  </Suspense>
+                  <ErrorBoundary onReset={() => { setSelectedTemplate(null); setSelectedApp(null); }}>
+                    <Suspense
+                      fallback={
+                        <div className="flex items-center justify-center py-12">
+                          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+                        </div>
+                      }
+                    >
+                      {SelectedComponent && <SelectedComponent />}
+                    </Suspense>
+                  </ErrorBoundary>
                 </div>
               </div>
             ) : (

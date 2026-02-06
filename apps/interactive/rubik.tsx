@@ -1,8 +1,23 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera, Text, RoundedBox } from '@react-three/drei';
+import { OrbitControls, PerspectiveCamera, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
-import { RotateCcw, Shuffle, Timer, MoveRight, Trophy, Info } from 'lucide-react';
+import { RotateCcw, Shuffle, Trophy, Info } from 'lucide-react';
+
+// --- Types ---
+interface CubieData {
+  id: string;
+  initialPos: number[];
+  currentPos: THREE.Vector3;
+  rotation: THREE.Quaternion;
+}
+
+interface MoveData {
+  axis: 'x' | 'y' | 'z';
+  layer: number;
+  direction: number;
+  id: number;
+}
 
 // --- Constants ---
 const COLORS = {
@@ -10,23 +25,14 @@ const COLORS = {
   bottom: '#FFFF00', // D - Yellow
   front: '#FF0000',  // F - Red
   back: '#FFA500',   // B - Orange
-  left: '#008000',   // L - Gree
+  left: '#008000',   // L - Green
   right: '#0000FF',  // R - Blue
   internal: '#111111'
 };
 
-const FACE_MAP = [
-  { name: 'right', axis: 'x', pos: 1, color: COLORS.right },
-  { name: 'left', axis: 'x', pos: -1, color: COLORS.left },
-  { name: 'top', axis: 'y', pos: 1, color: COLORS.top },
-  { name: 'bottom', axis: 'y', pos: -1, color: COLORS.bottom },
-  { name: 'front', axis: 'z', pos: 1, color: COLORS.front },
-  { name: 'back', axis: 'z', pos: -1, color: COLORS.back },
-];
-
 // --- Helpers ---
-const createInitialCubies = () => {
-  const cubies = [];
+const createInitialCubies = (): CubieData[] => {
+  const cubies: CubieData[] = [];
   for (let x = -1; x <= 1; x++) {
     for (let y = -1; y <= 1; y++) {
       for (let z = -1; z <= 1; z++) {
@@ -44,11 +50,11 @@ const createInitialCubies = () => {
 
 // --- Components ---
 
-const Cubie = ({ cubie }) => {
-  const meshRef = useRef();
+const Cubie = ({ cubie }: { cubie: CubieData }) => {
+  const meshRef = useRef<THREE.Group>(null);
 
   // Determine colors for each face
-  const getFaceColor = (faceIndex) => {
+  const getFaceColor = (faceIndex: number) => {
     const { initialPos } = cubie;
     // Three.js order: px, nx, py, ny, pz, nz
     if (faceIndex === 0 && initialPos[0] === 1) return COLORS.right;
@@ -71,10 +77,10 @@ const Cubie = ({ cubie }) => {
     <group ref={meshRef}>
       <RoundedBox args={[0.95, 0.95, 0.95]} radius={0.05} smoothness={4}>
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <meshStandardMaterial 
-            key={i} 
-            attach={`material-${i}`} 
-            color={getFaceColor(i)} 
+          <meshStandardMaterial
+            key={i}
+            attach={`material-${i}`}
+            color={getFaceColor(i)}
             roughness={0.1}
             metalness={0.2}
           />
@@ -84,9 +90,9 @@ const Cubie = ({ cubie }) => {
   );
 };
 
-const Cube = ({ moves, onMoveEnd }) => {
-  const [cubies, setCubies] = useState(createInitialCubies);
-  const [currentMove, setCurrentMove] = useState(null);
+const Cube = ({ moves, onMoveEnd }: { moves: MoveData[]; onMoveEnd: () => void }) => {
+  const [cubies, setCubies] = useState<CubieData[]>(createInitialCubies);
+  const [currentMove, setCurrentMove] = useState<MoveData | null>(null);
   const rotationGroupRef = useRef(new THREE.Group());
   const animationRef = useRef({ progress: 0, active: false });
 
@@ -99,7 +105,7 @@ const Cube = ({ moves, onMoveEnd }) => {
     }
   }, [moves]);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (!currentMove || !animationRef.current.active) return;
 
     const speed = 8; // Rotation speed
@@ -110,7 +116,7 @@ const Cube = ({ moves, onMoveEnd }) => {
       const angle = currentMove.direction * (Math.PI / 2);
       const axisVector = new THREE.Vector3();
       axisVector[currentMove.axis] = 1;
-      
+
       const rotationMatrix = new THREE.Matrix4().makeRotationAxis(axisVector, angle);
 
       const updatedCubies = cubies.map(c => {
@@ -139,7 +145,7 @@ const Cube = ({ moves, onMoveEnd }) => {
   });
 
   const rotatingCubieIds = useMemo(() => {
-    if (!currentMove) return new Set();
+    if (!currentMove) return new Set<string>();
     return new Set(
       cubies
         .filter(c => Math.round(c.currentPos[currentMove.axis]) === currentMove.layer)
@@ -167,14 +173,14 @@ const Cube = ({ moves, onMoveEnd }) => {
 };
 
 export default function RubiksGame() {
-  const [moveQueue, setMoveQueue] = useState([]);
+  const [moveQueue, setMoveQueue] = useState<MoveData[]>([]);
   const [moveCount, setMoveCount] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isSolved, setIsSolved] = useState(false);
 
   useEffect(() => {
-    let interval = null;
+    let interval: ReturnType<typeof setInterval> | undefined;
     if (isActive && !isSolved) {
       interval = setInterval(() => {
         setTimer((timer) => timer + 1);
@@ -185,7 +191,7 @@ export default function RubiksGame() {
     return () => clearInterval(interval);
   }, [isActive, isSolved]);
 
-  const addMove = (axis, layer, direction) => {
+  const addMove = (axis: MoveData['axis'], layer: number, direction: number) => {
     if (isSolved) setIsSolved(false);
     if (!isActive) setIsActive(true);
     setMoveQueue(prev => [...prev, { axis, layer, direction, id: Math.random() }]);
@@ -197,10 +203,10 @@ export default function RubiksGame() {
   };
 
   const shuffle = () => {
-    const axes = ['x', 'y', 'z'];
+    const axes: MoveData['axis'][] = ['x', 'y', 'z'];
     const layers = [-1, 0, 1];
     const dirs = [1, -1];
-    const newMoves = [];
+    const newMoves: MoveData[] = [];
     for (let i = 0; i < 20; i++) {
       newMoves.push({
         axis: axes[Math.floor(Math.random() * 3)],
@@ -219,7 +225,7 @@ export default function RubiksGame() {
     window.location.reload();
   };
 
-  const formatTime = (s) => {
+  const formatTime = (s: number) => {
     const mins = Math.floor(s / 60);
     const secs = s % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -244,7 +250,7 @@ export default function RubiksGame() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button 
+          <button
             onClick={shuffle}
             className="p-2 hover:bg-neutral-700 rounded-lg transition-colors flex items-center gap-2 text-sm font-semibold"
             title="Shuffle"
@@ -252,7 +258,7 @@ export default function RubiksGame() {
             <Shuffle size={18} />
             <span className="hidden sm:inline">Shuffle</span>
           </button>
-          <button 
+          <button
             onClick={reset}
             className="p-2 hover:bg-neutral-700 rounded-lg transition-colors"
             title="Reset"
@@ -298,7 +304,7 @@ export default function RubiksGame() {
             <ControlButton label="R" onClick={() => addMove('x', 1, -1)} color="blue" />
             <ControlButton label="F" onClick={() => addMove('z', 1, -1)} color="red" />
             <ControlButton label="B" onClick={() => addMove('z', -1, 1)} color="orange" />
-            
+
             <div className="col-span-3 text-[10px] font-bold text-neutral-500 uppercase tracking-widest mt-4 mb-1">Inverted</div>
             <ControlButton label="U'" onClick={() => addMove('y', 1, 1)} color="white" outline />
             <ControlButton label="D'" onClick={() => addMove('y', -1, -1)} color="yellow" outline />
@@ -317,8 +323,8 @@ export default function RubiksGame() {
             <Trophy className="mx-auto text-yellow-400 mb-4" size={64} />
             <h2 className="text-3xl font-bold mb-2">Solved!</h2>
             <p className="text-neutral-400 mb-6">You completed the cube in {moveCount} moves.</p>
-            <button 
-              onClick={reset} 
+            <button
+              onClick={reset}
               className="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-full font-bold transition-all"
             >
               Play Again
@@ -334,8 +340,10 @@ export default function RubiksGame() {
   );
 }
 
-function ControlButton({ label, onClick, color, outline }) {
-  const colorClasses = {
+type ControlColor = 'white' | 'yellow' | 'green' | 'blue' | 'red' | 'orange';
+
+function ControlButton({ label, onClick, color, outline }: { label: string; onClick: () => void; color: ControlColor; outline?: boolean }) {
+  const colorClasses: Record<ControlColor, string> = {
     white: 'border-white text-white hover:bg-white/10',
     yellow: 'border-yellow-400 text-yellow-400 hover:bg-yellow-400/10',
     green: 'border-green-500 text-green-500 hover:bg-green-500/10',

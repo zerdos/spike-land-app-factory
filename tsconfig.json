@@ -27,6 +27,6 @@
       "@/lib/*": ["./src/lib/*"]
     }
   },
-  "include": ["src", "scripts", "apps"],
+  "include": ["src", "apps"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
