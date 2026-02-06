@@ -44,7 +44,7 @@ const createInitialCubies = () => {
 
 // --- Components ---
 
-const Cubie = ({ cubie, rotationGroup, isRotating }) => {
+const Cubie = ({ cubie }) => {
   const meshRef = useRef();
 
   // Determine colors for each face
@@ -61,7 +61,7 @@ const Cubie = ({ cubie, rotationGroup, isRotating }) => {
   };
 
   useFrame(() => {
-    if (meshRef.current && !isRotating) {
+    if (meshRef.current) {
       meshRef.current.position.copy(cubie.currentPos);
       meshRef.current.quaternion.copy(cubie.rotation);
     }
@@ -92,6 +92,7 @@ const Cube = ({ moves, onMoveEnd }) => {
 
   useEffect(() => {
     if (moves.length > 0 && !animationRef.current.active) {
+      rotationGroupRef.current.rotation.set(0, 0, 0);
       setCurrentMove(moves[0]);
       animationRef.current.active = true;
       animationRef.current.progress = 0;
@@ -150,7 +151,7 @@ const Cube = ({ moves, onMoveEnd }) => {
     <group>
       {/* Static Cubies */}
       {cubies.filter(c => !rotatingCubieIds.has(c.id)).map(c => (
-        <Cubie key={c.id} cubie={c} isRotating={false} />
+        <Cubie key={c.id} cubie={c} />
       ))}
 
       {/* Rotating Cubies Group */}
@@ -158,7 +159,7 @@ const Cube = ({ moves, onMoveEnd }) => {
         {cubies.filter(c => rotatingCubieIds.has(c.id)).map(c => {
           // Position must be relative to the rotation group
           const localCubie = { ...c, currentPos: c.currentPos.clone() };
-          return <Cubie key={c.id} cubie={localCubie} isRotating={true} />;
+          return <Cubie key={c.id} cubie={localCubie} />;
         })}
       </primitive>
     </group>
