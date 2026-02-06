@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,17 +15,34 @@ const templates = {
 
 type TemplateName = keyof typeof templates;
 
+// Discover apps from apps/**/*.tsx via Vite glob import
+const appModules = import.meta.glob<{ default: React.ComponentType }>("../apps/**/*.tsx");
+
+const appEntries = Object.keys(appModules).map((path) => {
+  // path looks like "../apps/interactive/rubik.tsx"
+  const match = path.match(/\.\.\/apps\/([^/]+)\/([^/]+)\.tsx$/);
+  const category = match?.[1] ?? "unknown";
+  const name = match?.[2] ?? path;
+  return {
+    key: `${category}/${name}`,
+    category,
+    name,
+    component: lazy(appModules[path]),
+  };
+});
+
 function App() {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateName | null>(null);
-  const [appFiles, setAppFiles] = useState<string[]>([]);
+  const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("preview");
 
-  // In a real implementation, this would scan the apps directory
-  useEffect(() => {
-    // Placeholder - in production, this would use the filesystem or an API
-    setAppFiles([]);
-  }, []);
-
-  const SelectedComponent = selectedTemplate ? templates[selectedTemplate] : null;
+  const activeApp = selectedApp ? appEntries.find((a) => a.key === selectedApp) : null;
+  const SelectedComponent = selectedTemplate
+    ? templates[selectedTemplate]
+    : activeApp
+      ? activeApp.component
+      : null;
+  const previewLabel = selectedTemplate ?? activeApp?.name ?? null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,7 +63,7 @@ function App() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="preview" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="templates">Templates</TabsTrigger>
@@ -55,13 +72,13 @@ function App() {
 
           {/* Preview Tab */}
           <TabsContent value="preview" className="space-y-4">
-            {selectedTemplate ? (
+            {SelectedComponent ? (
               <div>
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-semibold">
-                    Previewing: {selectedTemplate}
+                    Previewing: {previewLabel}
                   </h2>
-                  <Button variant="outline" onClick={() => setSelectedTemplate(null)}>
+                  <Button variant="outline" onClick={() => { setSelectedTemplate(null); setSelectedApp(null); }}>
                     Back to List
                   </Button>
                 </div>
@@ -112,7 +129,7 @@ function App() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      onClick={() => setSelectedTemplate(name as TemplateName)}
+                      onClick={() => { setSelectedTemplate(name as TemplateName); setSelectedApp(null); setActiveTab("preview"); }}
                       className="w-full"
                     >
                       Preview
@@ -125,7 +142,7 @@ function App() {
 
           {/* Generated Apps Tab */}
           <TabsContent value="apps">
-            {appFiles.length === 0 ? (
+            {appEntries.length === 0 ? (
               <Card>
                 <CardHeader>
                   <CardTitle>No Apps Generated Yet</CardTitle>
@@ -148,13 +165,22 @@ function App() {
               </Card>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {appFiles.map((file) => (
-                  <Card key={file}>
+                {appEntries.map((app) => (
+                  <Card key={app.key} className="cursor-pointer hover:shadow-md transition-shadow">
                     <CardHeader>
-                      <CardTitle className="text-lg">{file}</CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">{app.name}</CardTitle>
+                        <Badge variant="secondary">{app.category}</Badge>
+                      </div>
+                      <CardDescription>{app.key}.tsx</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button className="w-full">Preview</Button>
+                      <Button
+                        className="w-full"
+                        onClick={() => { setSelectedApp(app.key); setSelectedTemplate(null); setActiveTab("preview"); }}
+                      >
+                        Preview
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
