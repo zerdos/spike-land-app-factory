@@ -7,7 +7,61 @@
       "attempts": 0,
       "createdAt": "2026-01-18T22:00:44.310Z",
       "updatedAt": "2026-01-18T22:34:44.970Z"
+    },
+    "bookmark-manager": {
+      "name": "bookmark-manager",
+      "category": "productivity",
+      "phase": "plan",
+      "attempts": 0,
+      "createdAt": "2026-01-18T22:38:06.476Z",
+      "updatedAt": "2026-01-18T22:38:14.182Z"
+    },
+    "calculator": {
+      "name": "calculator",
+      "category": "utility",
+      "phase": "debug",
+      "attempts": 0,
+      "createdAt": "2026-01-18T23:04:52.759Z",
+      "updatedAt": "2026-01-26T14:27:20.654Z",
+      "julesSessionId": "12281749160856180811",
+      "julesSessionUrl": "https://jules.google.com/session/12281749160856180811",
+      "julesSessionState": "IN_PROGRESS"
+    },
+    "unit-converter": {
+      "name": "unit-converter",
+      "category": "utility",
+      "phase": "polish",
+      "attempts": 0,
+      "createdAt": "2026-01-18T23:08:01.281Z",
+      "updatedAt": "2026-01-26T14:27:25.776Z",
+      "julesSessionId": "9619625578846931708",
+      "julesSessionUrl": "https://jules.google.com/session/9619625578846931708",
+      "julesSessionState": "IN_PROGRESS"
+    },
+    "puppy-age-calculator": {
+      "name": "puppy-age-calculator",
+      "category": "dogs",
+      "phase": "polish",
+      "attempts": 1,
+      "createdAt": "2026-01-18T23:14:21.702Z",
+      "updatedAt": "2026-01-19T01:22:24.964Z"
+    },
+    "dog-name-generator": {
+      "name": "dog-name-generator",
+      "category": "dogs",
+      "phase": "complete",
+      "attempts": 0,
+      "createdAt": "2026-01-18T23:17:02.169Z",
+      "updatedAt": "2026-01-19T00:15:10.703Z"
+    },
+    "age-calculator": {
+      "name": "age-calculator",
+      "category": "utility",
+      "phase": "test",
+      "attempts": 1,
+      "createdAt": "2026-01-18T23:59:46.294Z",
+      "updatedAt": "2026-01-19T00:51:14.922Z"
     }
   },
-  "lastUpdated": "2026-01-18T22:34:44.970Z"
+  "lastUpdated": "2026-01-26T14:28:12.725Z"
 }
