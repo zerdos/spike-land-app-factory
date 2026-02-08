@@ -68,10 +68,10 @@
       "phase": "develop",
       "attempts": 0,
       "createdAt": "2026-02-08T10:35:46.837Z",
-      "updatedAt": "2026-02-08T10:37:21.912Z",
+      "updatedAt": "2026-02-08T11:14:59.839Z",
       "codeSpaceId": "c-419f2869",
       "lastSyncHash": "RxGcCRxG",
-      "localFileHash": "6d72e5ab0ed2a5a8016c04aedf09b6f9",
+      "localFileHash": "712ae2ce14fd1ff6109db66249bf8a42",
       "liveUrl": "https://testing.spike.land/live/c-419f2869"
     },
     "47a5893f": {
@@ -80,12 +80,22 @@
       "phase": "develop",
       "attempts": 0,
       "createdAt": "2026-02-08T10:35:47.054Z",
-      "updatedAt": "2026-02-08T10:37:22.601Z",
+      "updatedAt": "2026-02-08T11:12:34.734Z",
       "codeSpaceId": "c-47a5893f",
       "lastSyncHash": "bfWsOZbf",
       "localFileHash": "c73a30d7361b18a697be3de18388e7f4",
       "liveUrl": "https://testing.spike.land/live/c-47a5893f"
+    },
+    "5cfec3c0": {
+      "name": "5cfec3c0",
+      "category": "imported",
+      "phase": "develop",
+      "attempts": 0,
+      "createdAt": "2026-02-08T11:12:34.787Z",
+      "updatedAt": "2026-02-08T11:12:34.787Z",
+      "codeSpaceId": "c-5cfec3c0",
+      "lastSyncHash": "amVHr4am"
     }
   },
-  "lastUpdated": "2026-02-08T10:37:22.602Z"
+  "lastUpdated": "2026-02-08T11:14:59.840Z"
 }

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Zap, Activity, BookOpen, Camera, Cloud, Droplets, CheckCircle, Circle, MapPin, Luggage } from "lucide-react";
+import { Sun, Zap, Activity, BookOpen, Camera, Cloud, Droplets, CheckCircle, Circle, MapPin, Luggage, Wallet, Plane } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,10 +38,37 @@ const PACKING_LIST = [
     { id: 6, item: 'Power Bank', checked: true }
 ];
 
+const BUDGET_ITEMS = [
+    { id: 1, label: 'Flights', amount: 420, emoji: '✈️' },
+    { id: 2, label: 'Hotels', amount: 650, emoji: '🏨' },
+    { id: 3, label: 'Food & Drinks', amount: 280, emoji: '🍜' },
+    { id: 4, label: 'Activities', amount: 190, emoji: '🏄' },
+    { id: 5, label: 'Shopping', amount: 160, emoji: '🛍️' },
+];
+
+const TRIP_DATE = new Date('2026-03-15T10:00:00');
+
+function useCountdown(target: Date) {
+    const [now, setNow] = useState(new Date());
+    useEffect(() => {
+        const id = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(id);
+    }, []);
+    const diff = Math.max(0, target.getTime() - now.getTime());
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000) / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    return { days, hours, minutes, seconds };
+}
+
 export default function SidsThaiAdventure() {
     const [funLevel, setFunLevel] = useState(85);
     const [activeTab, setActiveTab] = useState('style');
     const [packingList, setPackingList] = useState(PACKING_LIST);
+    const countdown = useCountdown(TRIP_DATE);
+    const budgetTotal = BUDGET_ITEMS.reduce((s, i) => s + i.amount, 0);
+    const budgetLimit = 2000;
 
     const handleFunBoost = () => {
         const newLevel = Math.min(funLevel + 5, 100);
@@ -136,16 +163,40 @@ export default function SidsThaiAdventure() {
                     </motion.div>
                 </header>
 
+                {/* Countdown Banner */}
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex items-center justify-center gap-8 py-4 px-6 rounded-2xl bg-black/20 backdrop-blur-lg border border-white/10"
+                >
+                    <div className="flex items-center gap-2 text-pink-300">
+                        <Plane className="w-5 h-5" />
+                        <span className="text-sm font-bold uppercase tracking-wider">Departure</span>
+                    </div>
+                    {[
+                        { val: countdown.days, label: 'Days' },
+                        { val: countdown.hours, label: 'Hrs' },
+                        { val: countdown.minutes, label: 'Min' },
+                        { val: countdown.seconds, label: 'Sec' },
+                    ].map((u) => (
+                        <div key={u.label} className="text-center">
+                            <div className="text-2xl md:text-3xl font-black text-white tabular-nums">{String(u.val).padStart(2, '0')}</div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/40">{u.label}</div>
+                        </div>
+                    ))}
+                </motion.div>
+
                 {/* Main Content */}
                 <Tabs value={activeTab} className="w-full" onValueChange={setActiveTab}>
                     <TabsList className="w-full flex p-1 bg-black/20 backdrop-blur-lg border border-white/10 rounded-2xl mb-8">
-                        {['style', 'spots', 'journal', 'packing'].map((tab) => (
+                        {['style', 'spots', 'journal', 'packing', 'budget'].map((tab) => (
                             <TabsTrigger
                                 key={tab}
                                 value={tab}
                                 className="flex-1 rounded-xl data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg active:scale-95 transition-all text-white/50 capitalize py-3"
                             >
-                                {tab === 'packing' ? 'Pack Your Bag' : tab}
+                                {tab === 'packing' ? 'Pack Your Bag' : tab === 'budget' ? 'Budget' : tab}
                             </TabsTrigger>
                         ))}
                     </TabsList>
@@ -287,12 +338,62 @@ export default function SidsThaiAdventure() {
                                 </Card>
                             </motion.div>
                         </TabsContent>
+                        <TabsContent value="budget" className="mt-0 focus-visible:outline-none">
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="max-w-md mx-auto"
+                            >
+                                <Card className="bg-white/10 backdrop-blur-md border-white/10">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2 text-white">
+                                            <Wallet className="w-5 h-5 text-green-400" />
+                                            Trip Budget
+                                        </CardTitle>
+                                        <CardDescription className="text-white/50">
+                                            ${budgetTotal.toLocaleString()} of ${budgetLimit.toLocaleString()} spent
+                                        </CardDescription>
+                                        <Progress value={(budgetTotal / budgetLimit) * 100} className="h-2 mt-2 bg-black/40" />
+                                    </CardHeader>
+                                    <CardContent className="space-y-2">
+                                        {BUDGET_ITEMS.map((item) => (
+                                            <div key={item.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-lg">{item.emoji}</span>
+                                                    <span className="text-sm text-white">{item.label}</span>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-sm font-bold text-white">${item.amount}</span>
+                                                    <div className="w-20 h-1.5 rounded-full bg-black/40 overflow-hidden">
+                                                        <div
+                                                            className="h-full rounded-full bg-gradient-to-r from-green-400 to-emerald-500"
+                                                            style={{ width: `${(item.amount / budgetLimit) * 100}%` }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </CardContent>
+                                    <CardFooter className="justify-between border-t border-white/10 pt-4">
+                                        <span className="text-xs text-white/30">Remaining: ${(budgetLimit - budgetTotal).toLocaleString()}</span>
+                                        <Badge variant="outline" className={cn(
+                                            "text-xs",
+                                            budgetTotal > budgetLimit
+                                                ? "border-red-500/50 text-red-300"
+                                                : "border-green-500/50 text-green-300"
+                                        )}>
+                                            {budgetTotal > budgetLimit ? 'Over Budget' : 'On Track'}
+                                        </Badge>
+                                    </CardFooter>
+                                </Card>
+                            </motion.div>
+                        </TabsContent>
                     </AnimatePresence>
                 </Tabs>
 
                 {/* Footer */}
                 <footer className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40">
-                    <p>© 2024 Sid's Travel Log — Stay Fun.</p>
+                    <p>© 2026 Sid's Travel Log — Stay Fun.</p>
                     <div className="flex gap-6">
                         <span className="hover:text-pink-400 cursor-pointer transition-colors flex items-center gap-2">
                             <Camera className="w-4 h-4" /> Gallery
