@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import {
     Play, Pause, Save, Trash2,
-    RotateCcw, Zap, Download, Shuffle, Bell
+    RotateCcw, Zap, Download, Shuffle, Bell, Upload
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────
@@ -204,6 +204,136 @@ function Knob({ value, min, max, onChange, label, displayValue, size = 56, color
     );
 }
 
+// ─── Pitch Bend Strip ───────────────────────────────────────────────
+interface PitchBendStripProps {
+    bpm: number;
+    onBpmChange: (bpm: number) => void;
+}
+
+function PitchBendStrip({ bpm, onBpmChange }: PitchBendStripProps) {
+    const stripRef = useRef<HTMLDivElement>(null);
+    const dragging = useRef(false);
+    const displacement = useRef(0);
+    const accumulator = useRef(bpm);
+    const rafRef = useRef<number>(0);
+    const lastTime = useRef(0);
+    const [disp, setDisp] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+
+    const MAX_RATE = 40; // BPM per second at max displacement
+    const STRIP_HALF = 60; // half-width in pixels
+
+    // Sync accumulator when bpm changes externally
+    useEffect(() => {
+        if (!dragging.current) {
+            accumulator.current = bpm;
+        }
+    }, [bpm]);
+
+    const animationLoop = useCallback((time: number) => {
+        if (!dragging.current) return;
+        if (lastTime.current === 0) { lastTime.current = time; }
+        const dt = Math.min((time - lastTime.current) / 1000, 0.05);
+        lastTime.current = time;
+
+        const d = displacement.current / STRIP_HALF; // -1 to 1
+        const force = Math.sign(d) * Math.pow(Math.abs(d), 1.5);
+        accumulator.current += force * MAX_RATE * dt;
+        accumulator.current = Math.max(40, Math.min(240, accumulator.current));
+
+        const rounded = Math.round(accumulator.current);
+        onBpmChange(rounded);
+
+        rafRef.current = requestAnimationFrame(animationLoop);
+    }, [onBpmChange]);
+
+    const handlePointerDown = (e: React.PointerEvent) => {
+        if (!stripRef.current) return;
+        dragging.current = true;
+        setIsDragging(true);
+        lastTime.current = 0;
+        (e.target as Element).setPointerCapture(e.pointerId);
+
+        const rect = stripRef.current.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        const dx = Math.max(-STRIP_HALF, Math.min(STRIP_HALF, e.clientX - center));
+        displacement.current = dx;
+        setDisp(dx);
+
+        rafRef.current = requestAnimationFrame(animationLoop);
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!dragging.current || !stripRef.current) return;
+        const rect = stripRef.current.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        const dx = Math.max(-STRIP_HALF, Math.min(STRIP_HALF, e.clientX - center));
+        displacement.current = dx;
+        setDisp(dx);
+    };
+
+    const handlePointerUp = () => {
+        dragging.current = false;
+        setIsDragging(false);
+        displacement.current = 0;
+        setDisp(0);
+        cancelAnimationFrame(rafRef.current);
+    };
+
+    const normDisp = disp / STRIP_HALF; // -1 to 1
+
+    return (
+        <div
+            ref={stripRef}
+            className="pitch-bend-strip relative select-none"
+            style={{ width: STRIP_HALF * 2 + 20, height: 32 }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+        >
+            <svg width="100%" height="100%" viewBox={`0 0 ${STRIP_HALF * 2 + 20} 32`}>
+                {/* Track background */}
+                <rect x="4" y="8" width={STRIP_HALF * 2 + 12} height="16" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
+                {/* Center line */}
+                <line x1={STRIP_HALF + 10} y1="10" x2={STRIP_HALF + 10} y2="22" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="2 2" />
+                {/* Displacement fill */}
+                {disp !== 0 && (
+                    <rect
+                        x={disp > 0 ? STRIP_HALF + 10 : STRIP_HALF + 10 + disp}
+                        y="10"
+                        width={Math.abs(disp)}
+                        height="12"
+                        rx="2"
+                        fill={disp > 0 ? "rgba(34,211,238,0.2)" : "rgba(251,146,60,0.2)"}
+                    />
+                )}
+                {/* Direction chevrons */}
+                <text x="10" y="20" fontSize="10" fill="rgba(255,255,255,0.15)" fontFamily="monospace">&lt;</text>
+                <text x={STRIP_HALF * 2 + 4} y="20" fontSize="10" fill="rgba(255,255,255,0.15)" fontFamily="monospace">&gt;</text>
+            </svg>
+            {/* Thumb */}
+            <div
+                className={`pitch-bend-thumb ${isDragging ? "dragging" : ""}`}
+                style={{
+                    position: "absolute",
+                    top: 4,
+                    left: STRIP_HALF + 10 - 6 + disp,
+                    width: 12,
+                    height: 24,
+                    borderRadius: 6,
+                    background: isDragging
+                        ? (normDisp > 0 ? "#22d3ee" : "#fb923c")
+                        : "rgba(255,255,255,0.5)",
+                    boxShadow: isDragging
+                        ? `0 0 10px ${normDisp > 0 ? "rgba(34,211,238,0.6)" : "rgba(251,146,60,0.6)"}`
+                        : "0 0 4px rgba(255,255,255,0.2)",
+                }}
+            />
+        </div>
+    );
+}
+
 // ─── Toast System ────────────────────────────────────────────────────
 function ToastContainer({ toasts, dismiss }: { toasts: Toast[], dismiss: (id: number) => void }) {
     return (
@@ -238,6 +368,8 @@ function useToast() {
     return { toasts, show, dismiss };
 }
 
+const STORAGE_KEY = "sonic-alarm-patterns";
+
 // ─── Main Component ──────────────────────────────────────────────────
 export default function AlarmSoundCreator() {
     const { toasts, show: showToast, dismiss: dismissToast } = useToast();
@@ -257,8 +389,14 @@ export default function AlarmSoundCreator() {
     const [filterFreq, setFilterFreq] = useState(8000);
     const [filterQ, setFilterQ] = useState(1);
     const [swing, setSwing] = useState(0);
-    const [savedPatterns, setSavedPatterns] = useState<Pattern[]>([]);
-    const [activeTab, setActiveTab] = useState("sequencer");
+    const [savedPatterns, setSavedPatterns] = useState<Pattern[]>(() => {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch { return []; }
+    });
+    const [activeTab, setActiveTab] = useState("presets");
+    const [activePreset, setActivePreset] = useState<string | null>(null);
 
     const baseFreq = useMemo(() => noteToFreq(note, octave), [note, octave]);
 
@@ -272,7 +410,14 @@ export default function AlarmSoundCreator() {
     const isPlayingRef = useRef(false);
 
     // Keep refs in sync
+    const bpmRef = useRef(bpm);
+    useEffect(() => { bpmRef.current = bpm; }, [bpm]);
     useEffect(() => { isPlayingRef.current = isPlaying; }, [isPlaying]);
+
+    useEffect(() => {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPatterns)); }
+        catch { /* quota exceeded */ }
+    }, [savedPatterns]);
 
     const initAudio = useCallback(() => {
         if (!audioCtx.current) {
@@ -297,6 +442,7 @@ export default function AlarmSoundCreator() {
 
         osc.type = waveform as OscillatorType;
         osc.frequency.setValueAtTime(freq, time);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.005, time + attack);
 
         filter.type = "lowpass";
         filter.frequency.setValueAtTime(filterFreq, time);
@@ -312,6 +458,12 @@ export default function AlarmSoundCreator() {
 
         osc.start(time);
         osc.stop(time + attack + release + 0.05);
+
+        osc.onended = () => {
+            osc.disconnect();
+            filter.disconnect();
+            envGain.disconnect();
+        };
     }, [waveform, volume, attack, release, filterFreq, filterQ]);
 
     // Sequencer with proper lookahead scheduling
@@ -326,7 +478,7 @@ export default function AlarmSoundCreator() {
 
         const scheduler = () => {
             if (!isPlayingRef.current) return;
-            const secPerStep = 60.0 / bpm / 4;
+            const secPerStep = 60.0 / bpmRef.current / 4;
 
             while (nextNoteTimeRef.current < ctx.currentTime + scheduleAhead) {
                 const step = currentStepRef.current % STEPS;
@@ -349,7 +501,7 @@ export default function AlarmSoundCreator() {
             schedulerRef.current = setTimeout(scheduler, lookInterval);
         };
         scheduler();
-    }, [bpm, sequence, pitchSeq, baseFreq, playTone, swing]);
+    }, [sequence, pitchSeq, baseFreq, playTone, swing]);
 
     const stopSequencer = useCallback(() => {
         clearTimeout(schedulerRef.current);
@@ -382,12 +534,14 @@ export default function AlarmSoundCreator() {
     const clearSequence = () => {
         setSequence(Array(STEPS).fill(false));
         setPitchSeq(Array(STEPS).fill(0));
+        setActivePreset(null);
         showToast("Sequence cleared", "info");
     };
 
     const randomize = () => {
         setSequence(Array(STEPS).fill(false).map(() => Math.random() > 0.45));
         setPitchSeq(Array(STEPS).fill(0).map(() => Math.floor(Math.random() * 13) - 6));
+        setActivePreset(null);
         showToast("Pattern randomized ✦", "info");
     };
 
@@ -417,6 +571,7 @@ export default function AlarmSoundCreator() {
         setFilterFreq(p.filterFreq);
         setFilterQ(p.filterQ);
         setSwing(p.swing);
+        setActivePreset(null);
         showToast(`Loaded: ${p.name}`, "info");
     };
 
@@ -491,6 +646,47 @@ export default function AlarmSoundCreator() {
         showToast("WAV file exported ✓", "success");
     }, [bpm, sequence, pitchSeq, baseFreq, waveform, volume, attack, release, filterFreq, filterQ, swing]);
 
+    // JSON Export/Import
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const exportJSON = useCallback(() => {
+        if (savedPatterns.length === 0) {
+            showToast("No patterns to export", "error");
+            return;
+        }
+        const data = JSON.stringify(savedPatterns, null, 2);
+        const blob = new Blob([data], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `sonic-alarm-patterns-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Exported ${savedPatterns.length} pattern(s)`, "success");
+    }, [savedPatterns]);
+
+    const importJSON = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const imported = JSON.parse(ev.target?.result as string);
+                if (!Array.isArray(imported)) throw new Error("Invalid format");
+                const patterns: Pattern[] = imported.map((p: any) => ({
+                    ...p,
+                    id: Date.now() + Math.random(),
+                }));
+                setSavedPatterns((prev) => [...prev, ...patterns]);
+                showToast(`Imported ${patterns.length} pattern(s)`, "success");
+            } catch {
+                showToast("Invalid JSON file", "error");
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+    }, []);
+
     // Presets
     const presets: Preset[] = [
         { name: "Neon Pulse", waveform: "square", note: "A", octave: 5, bpm: 140, volume: 0.4, attack: 0.01, release: 0.1, filterFreq: 4000, filterQ: 2, swing: 0, sequence: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0].map(Boolean), pitchSeq: [0, 0, 5, 0, 0, 0, 7, 0, 0, 0, 5, 0, 0, 0, 3, 0] },
@@ -501,7 +697,7 @@ export default function AlarmSoundCreator() {
         // Daft Punk Inspired
         { name: "Harder Better", waveform: "sawtooth", note: "F#", octave: 4, bpm: 123, volume: 0.4, attack: 0.01, release: 0.1, filterFreq: 2500, filterQ: 2, swing: 0, sequence: [1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0].map(Boolean), pitchSeq: [0, 0, 0, 0, 0, 3, 0, 5, 5, 0, 0, 3, 0, 0, 0, 0] },
         { name: "Aerodynamic Solo", waveform: "square", note: "B", octave: 5, bpm: 123, volume: 0.35, attack: 0.01, release: 0.1, filterFreq: 6000, filterQ: 4, swing: 0, sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(Boolean), pitchSeq: [0, 3, 7, 10, 12, 10, 7, 3, 0, 3, 7, 10, 12, 10, 7, 3] },
-        { name: "Robot Rock", waveform: "sawtooth", note: "E", octave: 3, bpm: 114, volume: 0.5, attack: 0.01, release: 0.2, filterFreq: 3000, filterQ: 6, swing: 10, sequence: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0].map(Boolean), pitchSeq: [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 5, 3, 0, 0] },
+        { name: "Robot Rock", waveform: "sawtooth", note: "E", octave: 3, bpm: 114, volume: 0.5, attack: 0.01, release: 0.2, filterFreq: 3000, filterQ: 5, swing: 10, sequence: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0].map(Boolean), pitchSeq: [0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 5, 3, 0, 0] },
         // Other Popular
         { name: "Sweet Dreams", waveform: "sawtooth", note: "C", octave: 3, bpm: 125, volume: 0.4, attack: 0.02, release: 0.2, filterFreq: 1500, filterQ: 1, swing: 0, sequence: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0].map(Boolean), pitchSeq: [0, 0, 0, 0, 3, 0, 0, 0, -2, 0, 0, 0, -4, 0, 3, 0] },
         { name: "Blue Monday", waveform: "square", note: "D", octave: 3, bpm: 130, volume: 0.45, attack: 0.01, release: 0.1, filterFreq: 2000, filterQ: 0.5, swing: 0, sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map(Boolean), pitchSeq: [0, 0, 0, 0, 12, 12, 12, 12, 0, 0, 0, 0, 12, 12, 12, 12] },
@@ -513,8 +709,17 @@ export default function AlarmSoundCreator() {
         setBpm(p.bpm); setVolume(p.volume); setAttack(p.attack);
         setRelease(p.release); setFilterFreq(p.filterFreq); setFilterQ(p.filterQ);
         setSwing(p.swing); setSequence(p.sequence); setPitchSeq(p.pitchSeq);
+        setActivePreset(p.name);
         showToast(`Loaded: ${p.name}`, "info");
     };
+
+    // Load a random preset on mount
+    useEffect(() => {
+        const idx = Math.floor(Math.random() * presets.length);
+        const p = presets[idx];
+        loadPreset(p);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const accentColor = "#22d3ee";
 
@@ -619,6 +824,10 @@ export default function AlarmSoundCreator() {
           transition: height 0.15s ease, background 0.15s ease;
         }
         
+        .pitch-bend-strip { cursor: ew-resize; touch-action: none; }
+        .pitch-bend-thumb { transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .pitch-bend-thumb.dragging { transition: none; }
+
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
@@ -697,12 +906,16 @@ export default function AlarmSoundCreator() {
                         <div className="flex-1 flex items-center gap-6">
                             <div className="flex items-center gap-3">
                                 <span className="text-[10px] tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.35)" }}>BPM</span>
-                                <span className="heading-font text-2xl font-bold tabular-nums" style={{ color: "#22d3ee" }}>{bpm}</span>
-                                <input
-                                    type="range" min={40} max={240} value={bpm}
-                                    onChange={(e) => setBpm(Number(e.target.value))}
-                                    className="range-cyan w-32"
-                                />
+                                <span
+                                    className="heading-font text-2xl font-bold tabular-nums cursor-ns-resize"
+                                    style={{ color: "#22d3ee" }}
+                                    onWheel={(e) => {
+                                        e.preventDefault();
+                                        setBpm((prev) => Math.max(40, Math.min(240, prev + (e.deltaY < 0 ? 1 : -1))));
+                                    }}
+                                    title="Scroll to fine-adjust BPM"
+                                >{bpm}</span>
+                                <PitchBendStrip bpm={bpm} onBpmChange={setBpm} />
                             </div>
 
                             <div className="h-8 w-px" style={{ background: "rgba(255,255,255,0.08)" }} />
@@ -912,7 +1125,7 @@ export default function AlarmSoundCreator() {
                                 <Knob value={filterFreq} min={200} max={12000} onChange={(v) => setFilterFreq(Math.round(v))}
                                     label="Cutoff" displayValue={filterFreq >= 1000 ? `${(filterFreq / 1000).toFixed(1)}k` : `${filterFreq}Hz`}
                                     color="#fb923c" />
-                                <Knob value={filterQ} min={0.1} max={15} onChange={(v) => setFilterQ(Math.round(v * 10) / 10)}
+                                <Knob value={filterQ} min={0.1} max={10} onChange={(v) => setFilterQ(Math.round(v * 10) / 10)}
                                     label="Resonance" displayValue={`Q ${filterQ.toFixed(1)}`}
                                     color="#f472b6" />
 
@@ -944,8 +1157,8 @@ export default function AlarmSoundCreator() {
                                         onClick={() => loadPreset(p)}
                                         className="text-left p-4 rounded-xl transition-all hover:scale-[1.02]"
                                         style={{
-                                            background: "rgba(255,255,255,0.03)",
-                                            border: "1px solid rgba(255,255,255,0.06)",
+                                            background: activePreset === p.name ? "rgba(34,211,238,0.08)" : "rgba(255,255,255,0.03)",
+                                            border: activePreset === p.name ? "1px solid rgba(34,211,238,0.4)" : "1px solid rgba(255,255,255,0.06)",
                                         }}
                                     >
                                         <div className="flex items-center gap-2 mb-2">
@@ -976,6 +1189,29 @@ export default function AlarmSoundCreator() {
 
                         {activeTab === "library" && (
                             <div>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    accept=".json"
+                                    onChange={importJSON}
+                                    className="hidden"
+                                />
+                                <div className="flex items-center justify-end gap-2 mb-4">
+                                    <button
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all hover:bg-white/5"
+                                        style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }}
+                                    >
+                                        <Upload className="w-3.5 h-3.5" /> Import JSON
+                                    </button>
+                                    <button
+                                        onClick={exportJSON}
+                                        className="px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all"
+                                        style={{ color: "#22d3ee", background: "rgba(34,211,238,0.1)", border: "1px solid rgba(34,211,238,0.2)" }}
+                                    >
+                                        <Download className="w-3.5 h-3.5" /> Export JSON
+                                    </button>
+                                </div>
                                 {savedPatterns.length === 0 ? (
                                     <div className="text-center py-12" style={{ color: "rgba(255,255,255,0.25)" }}>
                                         <Save className="w-8 h-8 mx-auto mb-3 opacity-50" />
