@@ -27,7 +27,8 @@ export default [
     rules: {
       // React key rules - catch duplicate/missing key bugs
       "react/jsx-key": ["error", { checkFragmentShorthand: true }],
-      "react/no-array-index-key": "warn",
+      // no-array-index-key off: single-file apps use fixed-size arrays (step sequencers, decorative effects)
+      "react/no-array-index-key": "off",
       "react/jsx-no-duplicate-props": "error",
 
       // React hooks

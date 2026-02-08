@@ -142,7 +142,6 @@ function ThaiDancer() {
                     </defs>
                 </svg>
                 {/* Sparkle trail */}
-                {/* eslint-disable-next-line react/no-array-index-key -- fixed-size decorative sparkles */}
                 {[...Array(5)].map((_, i) => (
                     <motion.div
                         key={`sparkle-${i}`}
@@ -259,7 +258,6 @@ export default function SidsThaiAdventure() {
                             </motion.p>
                         </motion.div>
                         {/* Floating music notes */}
-                        {/* eslint-disable-next-line react/no-array-index-key -- fixed decorative notes */}
                         {['🎵', '🎶', '🎵', '🎶', '🎵', '🎶'].map((note, i) => (
                             <motion.div
                                 key={`note-${i}`}

@@ -966,7 +966,6 @@ export default function AlarmSoundCreator() {
                     <div>
                         {/* Beat markers */}
                         <div className="grid grid-cols-16 gap-1.5 mb-1" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
-                            {/* eslint-disable-next-line react/no-array-index-key -- fixed 16-step grid */}
                             {Array(STEPS).fill(0).map((_, i) => (
                                 <div key={`beat-${i}`} className="text-center">
                                     <span className="text-[9px] font-mono" style={{ color: i % 4 === 0 ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)" }}>
@@ -978,7 +977,6 @@ export default function AlarmSoundCreator() {
 
                         {/* Steps */}
                         <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
-                            {/* eslint-disable-next-line react/no-array-index-key -- step position is the identity */}
                             {sequence.map((active, i) => {
                                 const isCurrent = currentStep === i && isPlaying;
                                 const isDownbeat = i % 4 === 0;
@@ -1010,7 +1008,6 @@ export default function AlarmSoundCreator() {
 
                         {/* Pitch offsets */}
                         <div className="grid gap-1.5 mt-1" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
-                            {/* eslint-disable-next-line react/no-array-index-key -- step position is the identity */}
                             {pitchSeq.map((_, i) => (
                                 <div key={`pitch-${i}`} className="flex flex-col items-center">
                                     <div className="flex gap-px">
@@ -1177,7 +1174,6 @@ export default function AlarmSoundCreator() {
                                         </div>
                                         {/* Mini sequencer preview */}
                                         <div className="flex gap-0.5 mt-2">
-                                            {/* eslint-disable-next-line react/no-array-index-key -- fixed sequence preview */}
                                             {p.sequence.map((s, i) => (
                                                 <div
                                                     key={`preview-${i}`}
