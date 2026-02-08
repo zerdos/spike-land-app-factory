@@ -359,12 +359,12 @@
 
     function useToast() {
         const [toasts, setToasts] = useState<Toast[]>([]);
-        const show = (message: string, type: "info" | "success" | "error" = "info") => {
+        const show = useCallback((message: string, type: "info" | "success" | "error" = "info") => {
             const id = Date.now();
             setToasts((p) => [...p, { id, message, type }]);
             setTimeout(() => setToasts((p) => p.filter((t) => t.id !== id)), 2500);
-        };
-        const dismiss = (id: number) => setToasts((p) => p.filter((t) => t.id !== id));
+        }, []);
+        const dismiss = useCallback((id: number) => setToasts((p) => p.filter((t) => t.id !== id)), []);
         return { toasts, show, dismiss };
     }
 
@@ -645,7 +645,7 @@
             a.click();
             URL.revokeObjectURL(url);
             showToast("WAV file exported ✓", "success");
-        }, [bpm, sequence, pitchSeq, baseFreq, waveform, volume, attack, release, filterFreq, filterQ, swing]);
+        }, [bpm, sequence, pitchSeq, baseFreq, waveform, volume, attack, release, filterFreq, filterQ, swing, showToast]);
 
         // JSON Export/Import
         const fileInputRef = useRef<HTMLInputElement>(null);
@@ -664,7 +664,7 @@
             a.click();
             URL.revokeObjectURL(url);
             showToast(`Exported ${savedPatterns.length} pattern(s)`, "success");
-        }, [savedPatterns]);
+        }, [savedPatterns, showToast]);
 
         const importJSON = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
             const file = e.target.files?.[0];
@@ -686,7 +686,7 @@
             };
             reader.readAsText(file);
             e.target.value = "";
-        }, []);
+        }, [showToast]);
 
         // Presets
         const presets: Preset[] = [
@@ -1009,8 +1009,9 @@
                         <div>
                             {/* Beat markers */}
                             <div className="grid grid-cols-16 gap-1.5 mb-1" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
+                                {/* eslint-disable-next-line react/no-array-index-key -- fixed 16-step grid */}
                                 {Array(STEPS).fill(0).map((_, i) => (
-                                    <div key={i} className="text-center">
+                                    <div key={`beat-${i}`} className="text-center">
                                         <span className="text-[9px] font-mono" style={{ color: i % 4 === 0 ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.15)" }}>
                                             {i + 1}
                                         </span>
@@ -1020,12 +1021,13 @@
 
                             {/* Steps */}
                             <div className="grid gap-1.5" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
+                                {/* eslint-disable-next-line react/no-array-index-key -- step position is the identity */}
                                 {sequence.map((active, i) => {
                                     const isCurrent = currentStep === i && isPlaying;
                                     const isDownbeat = i % 4 === 0;
                                     return (
                                         <button
-                                            key={i}
+                                            key={`seq-${i}`}
                                             onClick={() => toggleStep(i)}
                                             className={`step-btn h-14 md:h-16 rounded-lg flex flex-col items-center justify-center gap-0.5 ${active ? (isDownbeat ? "step-active" : "step-active-alt") : ""
                                                 } ${isCurrent ? "step-current" : ""}`}
@@ -1051,8 +1053,9 @@
 
                             {/* Pitch offsets */}
                             <div className="grid gap-1.5 mt-1" style={{ gridTemplateColumns: "repeat(16, 1fr)" }}>
+                                {/* eslint-disable-next-line react/no-array-index-key -- step position is the identity */}
                                 {pitchSeq.map((_, i) => (
-                                    <div key={i} className="flex flex-col items-center">
+                                    <div key={`pitch-${i}`} className="flex flex-col items-center">
                                         <div className="flex gap-px">
                                             <button
                                                 onClick={() => setPitchStep(i, 1)}
@@ -1231,9 +1234,10 @@
                                             </div>
                                             {/* Mini sequencer preview */}
                                             <div className="flex gap-0.5 mt-2">
+                                                {/* eslint-disable-next-line react/no-array-index-key -- fixed sequence preview */}
                                                 {p.sequence.map((s, i) => (
                                                     <div
-                                                        key={i}
+                                                        key={`preview-${i}`}
                                                         className="h-1.5 flex-1 rounded-full"
                                                         style={{ background: s ? "#22d3ee" : "rgba(255,255,255,0.06)" }}
                                                     />
@@ -1309,8 +1313,9 @@
                                                         <span className="capitalize">{p.waveform}</span>
                                                     </div>
                                                     <div className="flex gap-0.5 mt-2">
+                                                        {/* eslint-disable-next-line react/no-array-index-key -- fixed sequence preview */}
                                                         {p.sequence.map((s, i) => (
-                                                            <div key={i} className="h-1.5 flex-1 rounded-full"
+                                                            <div key={`lib-${i}`} className="h-1.5 flex-1 rounded-full"
                                                                 style={{ background: s ? "#22d3ee" : "rgba(255,255,255,0.06)" }} />
                                                         ))}
                                                     </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Zap, Activity, BookOpen, Camera, Cloud, Droplets, CheckCircle, Circle, MapPin, Luggage, Wallet, Plane } from "lucide-react";
 import { Button } from '@/components/ui/button';
@@ -62,25 +62,150 @@ function useCountdown(target: Date) {
     return { days, hours, minutes, seconds };
 }
 
+function ThaiDancer() {
+    return (
+        <motion.div
+            initial={{ x: '110vw', y: '30vh' }}
+            animate={{
+                x: [null, '70vw', '40vw', '10vw', '-20vw'],
+                y: [null, '25vh', '35vh', '25vh', '30vh'],
+                rotate: [0, -8, 8, -8, 0],
+            }}
+            transition={{ duration: 5, ease: 'easeInOut' }}
+            className="fixed z-[60] pointer-events-none"
+        >
+            <motion.div
+                animate={{ y: [0, -12, 0, -12, 0] }}
+                transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+            >
+                <svg width="120" height="200" viewBox="0 0 120 200" fill="none">
+                    {/* Crown (Chada) */}
+                    <motion.g
+                        animate={{ rotate: [0, 3, -3, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                        style={{ transformOrigin: '60px 25px' }}
+                    >
+                        <polygon points="60,0 50,22 70,22" fill="#fbbf24" />
+                        <polygon points="60,2 45,28 75,28" fill="#f59e0b" />
+                        <polygon points="55,5 48,22 62,22" fill="#fcd34d" />
+                        <circle cx="60" cy="8" r="2" fill="#ef4444" />
+                    </motion.g>
+                    {/* Head */}
+                    <circle cx="60" cy="38" r="14" fill="#d4a574" />
+                    <circle cx="55" cy="36" r="1.5" fill="#1a1a1a" />
+                    <circle cx="65" cy="36" r="1.5" fill="#1a1a1a" />
+                    <path d="M57 42 Q60 45 63 42" stroke="#c4846a" strokeWidth="1.5" fill="none" />
+                    {/* Necklace */}
+                    <path d="M48 52 Q60 58 72 52" stroke="#fbbf24" strokeWidth="2" fill="none" />
+                    <circle cx="60" cy="57" r="3" fill="#fbbf24" />
+                    {/* Body / Dress */}
+                    <path d="M48 52 L42 120 L78 120 L72 52 Z" fill="url(#dressGrad)" />
+                    <path d="M42 120 Q60 135 78 120" fill="#16a34a" />
+                    {/* Dress details */}
+                    <path d="M50 70 L70 70" stroke="#fbbf24" strokeWidth="1" opacity="0.6" />
+                    <path d="M48 85 L72 85" stroke="#fbbf24" strokeWidth="1" opacity="0.6" />
+                    <path d="M45 100 L75 100" stroke="#fbbf24" strokeWidth="1" opacity="0.6" />
+                    {/* Left arm - dancing pose */}
+                    <motion.g
+                        animate={{ rotate: [0, -15, 0, 15, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                        style={{ transformOrigin: '48px 55px' }}
+                    >
+                        <path d="M48 55 L25 45 L18 30" stroke="#d4a574" strokeWidth="5" strokeLinecap="round" fill="none" />
+                        <circle cx="18" cy="28" r="4" fill="#d4a574" />
+                        {/* Finger curl */}
+                        <path d="M16 25 Q14 22 16 20" stroke="#d4a574" strokeWidth="2" fill="none" />
+                    </motion.g>
+                    {/* Right arm - dancing pose */}
+                    <motion.g
+                        animate={{ rotate: [0, 15, 0, -15, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+                        style={{ transformOrigin: '72px 55px' }}
+                    >
+                        <path d="M72 55 L95 45 L102 30" stroke="#d4a574" strokeWidth="5" strokeLinecap="round" fill="none" />
+                        <circle cx="102" cy="28" r="4" fill="#d4a574" />
+                        <path d="M104 25 Q106 22 104 20" stroke="#d4a574" strokeWidth="2" fill="none" />
+                    </motion.g>
+                    {/* Legs */}
+                    <path d="M52 120 L48 165" stroke="#d4a574" strokeWidth="5" strokeLinecap="round" />
+                    <path d="M68 120 L72 165" stroke="#d4a574" strokeWidth="5" strokeLinecap="round" />
+                    {/* Feet */}
+                    <ellipse cx="46" cy="168" rx="6" ry="3" fill="#fbbf24" />
+                    <ellipse cx="74" cy="168" rx="6" ry="3" fill="#fbbf24" />
+                    {/* Gradient definitions */}
+                    <defs>
+                        <linearGradient id="dressGrad" x1="60" y1="52" x2="60" y2="120" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stopColor="#15803d" />
+                            <stop offset="50%" stopColor="#16a34a" />
+                            <stop offset="100%" stopColor="#22c55e" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                {/* Sparkle trail */}
+                {/* eslint-disable-next-line react/no-array-index-key -- fixed-size decorative sparkles */}
+                {[...Array(5)].map((_, i) => (
+                    <motion.div
+                        key={`sparkle-${i}`}
+                        className="absolute text-yellow-300"
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{
+                            opacity: [0, 1, 0],
+                            scale: [0, 1.2, 0],
+                            x: [0, (i % 2 ? 1 : -1) * (10 + i * 8)],
+                            y: [0, -20 - i * 10],
+                        }}
+                        transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            delay: i * 0.25,
+                        }}
+                        style={{ left: 50 + i * 5, top: 80 + i * 15 }}
+                    >
+                        ✦
+                    </motion.div>
+                ))}
+            </motion.div>
+        </motion.div>
+    );
+}
+
+function getVibeColor(level: number) {
+    if (level >= 95) return 'from-red-500 to-orange-500';
+    if (level >= 80) return 'from-orange-400 to-amber-500';
+    if (level >= 60) return 'from-yellow-400 to-orange-400';
+    return 'from-green-400 to-emerald-500';
+}
+
 export default function SidsThaiAdventure() {
     const [funLevel, setFunLevel] = useState(85);
     const [activeTab, setActiveTab] = useState('style');
     const [packingList, setPackingList] = useState(PACKING_LIST);
+    const [partyMode, setPartyMode] = useState(false);
     const countdown = useCountdown(TRIP_DATE);
     const budgetTotal = BUDGET_ITEMS.reduce((s, i) => s + i.amount, 0);
     const budgetLimit = 2000;
+
+    const fireConfetti = useCallback(() => {
+        confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ['#fbbf24', '#f59e0b', '#ef4444', '#22c55e', '#06b6d4']
+        });
+    }, []);
 
     const handleFunBoost = () => {
         const newLevel = Math.min(funLevel + 5, 100);
         setFunLevel(newLevel);
         if (newLevel >= 100) {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#fbbf24', '#f472b6', '#60a5fa']
-            });
-            setTimeout(() => setFunLevel(85), 3000);
+            setPartyMode(true);
+            fireConfetti();
+            setTimeout(() => fireConfetti(), 800);
+            setTimeout(() => fireConfetti(), 1600);
+            setTimeout(() => {
+                setPartyMode(false);
+                setFunLevel(85);
+            }, 5000);
         }
     };
 
@@ -99,7 +224,72 @@ export default function SidsThaiAdventure() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 p-4 md:p-8 text-white font-sans selection:bg-pink-500/30">
+        <div className="min-h-screen bg-gradient-to-br from-teal-900 via-emerald-900 to-amber-900 p-4 md:p-8 text-white font-sans selection:bg-amber-500/30">
+            {/* Party Mode Overlay */}
+            <AnimatePresence>
+                {partyMode && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 via-pink-500/20 to-cyan-500/20 animate-pulse" />
+                        <motion.div
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: 180 }}
+                            transition={{ type: 'spring', damping: 12 }}
+                            className="relative z-10 text-center"
+                        >
+                            <motion.h2
+                                animate={{ scale: [1, 1.1, 1] }}
+                                transition={{ duration: 0.5, repeat: Infinity }}
+                                className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-cyan-300 drop-shadow-[0_0_30px_rgba(251,191,36,0.5)]"
+                            >
+                                PARTY MODE
+                            </motion.h2>
+                            <motion.p
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="text-2xl mt-4 text-amber-200"
+                            >
+                                Vibe Check: MAXIMUM
+                            </motion.p>
+                        </motion.div>
+                        {/* Floating music notes */}
+                        {/* eslint-disable-next-line react/no-array-index-key -- fixed decorative notes */}
+                        {['🎵', '🎶', '🎵', '🎶', '🎵', '🎶'].map((note, i) => (
+                            <motion.div
+                                key={`note-${i}`}
+                                className="absolute text-3xl"
+                                initial={{
+                                    x: `${15 + i * 14}vw`,
+                                    y: '100vh',
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    y: '-10vh',
+                                    opacity: [0, 1, 1, 0],
+                                    x: `${15 + i * 14 + (i % 2 ? 5 : -5)}vw`,
+                                    rotate: [0, 20, -20, 0],
+                                }}
+                                transition={{
+                                    duration: 3,
+                                    delay: i * 0.4,
+                                    repeat: Infinity,
+                                    ease: 'easeOut',
+                                }}
+                            >
+                                {note}
+                            </motion.div>
+                        ))}
+                        <ThaiDancer />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="max-w-5xl mx-auto space-y-8">
                 {/* Hero Section */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
@@ -109,7 +299,7 @@ export default function SidsThaiAdventure() {
                             animate={{ opacity: 1, x: 0 }}
                             className="flex items-center gap-2"
                         >
-                            <Badge variant="outline" className="border-pink-500/50 text-pink-300 bg-pink-950/30 px-3 py-1 backdrop-blur-sm">
+                            <Badge variant="outline" className="border-amber-500/50 text-amber-300 bg-amber-950/30 px-3 py-1 backdrop-blur-sm">
                                 🇹🇭 Thailand Edition
                             </Badge>
                             <Badge variant="outline" className="border-cyan-500/50 text-cyan-300 bg-cyan-950/30 px-3 py-1 backdrop-blur-sm">
@@ -120,7 +310,7 @@ export default function SidsThaiAdventure() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]"
+                            className="text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-teal-300 drop-shadow-[0_0_15px_rgba(251,191,36,0.3)]"
                         >
                             Sid's Thai <br className="hidden md:block" />
                             <span className="italic text-white">Adventure</span>
@@ -129,7 +319,7 @@ export default function SidsThaiAdventure() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="text-pink-100/80 text-lg max-w-lg leading-relaxed"
+                            className="text-amber-100/80 text-lg max-w-lg leading-relaxed"
                         >
                             Curated lifestyle, travel stories, and essentials for the ultimate tropical escape.
                         </motion.p>
@@ -141,22 +331,45 @@ export default function SidsThaiAdventure() {
                         transition={{ delay: 0.3 }}
                         className="w-full md:w-80"
                     >
-                        <Card className="bg-white/10 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden group hover:border-white/20 transition-all">
+                        <Card className={cn(
+                            "bg-white/10 backdrop-blur-xl border-white/10 shadow-2xl overflow-hidden group hover:border-amber-400/30 transition-all",
+                            partyMode && "border-amber-400/60 shadow-amber-400/20 shadow-xl",
+                            funLevel >= 95 && !partyMode && "border-orange-400/40"
+                        )}>
                             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/40 pointer-events-none" />
                             <CardContent className="pt-6 relative z-10">
                                 <div className="flex justify-between items-center mb-4">
                                     <div className="flex items-center gap-2">
-                                        <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                                        <Zap className={cn(
+                                            "w-5 h-5 fill-yellow-400",
+                                            funLevel >= 95 ? "text-red-400 fill-red-400" : "text-yellow-400"
+                                        )} />
                                         <span className="text-sm font-bold tracking-wider uppercase text-yellow-100">Vibe Check</span>
                                     </div>
-                                    <span className="text-2xl font-black text-yellow-400">{funLevel}%</span>
+                                    <span className={cn(
+                                        "text-2xl font-black",
+                                        funLevel >= 95 ? "text-red-400" : "text-yellow-400"
+                                    )}>{funLevel}%</span>
                                 </div>
-                                <Progress value={funLevel} className="h-3 bg-black/40 indicator:bg-gradient-to-r indicator:from-yellow-400 indicator:to-orange-500" />
+                                <Progress
+                                    value={funLevel}
+                                    className={cn(
+                                        "h-3 bg-black/40",
+                                        `indicator:bg-gradient-to-r indicator:${getVibeColor(funLevel)}`,
+                                        funLevel >= 95 && "animate-pulse"
+                                    )}
+                                />
                                 <Button
                                     onClick={handleFunBoost}
-                                    className="w-full mt-6 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold shadow-lg shadow-pink-500/20"
+                                    disabled={partyMode}
+                                    className={cn(
+                                        "w-full mt-6 font-bold shadow-lg transition-all",
+                                        funLevel >= 95
+                                            ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white shadow-red-500/20 animate-pulse"
+                                            : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/20"
+                                    )}
                                 >
-                                    Boost the Vibe 🚀
+                                    {funLevel >= 95 ? 'SEND IT! 🔥' : 'Boost the Vibe 🚀'}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -170,7 +383,7 @@ export default function SidsThaiAdventure() {
                     transition={{ delay: 0.4 }}
                     className="flex items-center justify-center gap-8 py-4 px-6 rounded-2xl bg-black/20 backdrop-blur-lg border border-white/10"
                 >
-                    <div className="flex items-center gap-2 text-pink-300">
+                    <div className="flex items-center gap-2 text-amber-300">
                         <Plane className="w-5 h-5" />
                         <span className="text-sm font-bold uppercase tracking-wider">Departure</span>
                     </div>
@@ -194,7 +407,7 @@ export default function SidsThaiAdventure() {
                             <TabsTrigger
                                 key={tab}
                                 value={tab}
-                                className="flex-1 rounded-xl data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg active:scale-95 transition-all text-white/50 capitalize py-3"
+                                className="flex-1 rounded-xl data-[state=active]:bg-amber-500/15 data-[state=active]:text-amber-100 data-[state=active]:shadow-lg active:scale-95 transition-all text-white/50 capitalize py-3"
                             >
                                 {tab === 'packing' ? 'Pack Your Bag' : tab === 'budget' ? 'Budget' : tab}
                             </TabsTrigger>
@@ -210,7 +423,7 @@ export default function SidsThaiAdventure() {
                                 className="grid grid-cols-1 md:grid-cols-2 gap-6"
                             >
                                 {STYLE_ITEMS.map((item) => (
-                                    <Card key={item.id} className="bg-black/20 border-white/5 overflow-hidden hover:bg-black/30 transition-all group border hover:border-pink-500/30">
+                                    <Card key={item.id} className="bg-black/20 border-white/5 overflow-hidden hover:bg-black/30 transition-all group border hover:border-amber-500/30">
                                         <div className="h-48 overflow-hidden relative">
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
                                             <Badge className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md border-white/10 hover:bg-black/80 pointer-events-none">
@@ -235,7 +448,7 @@ export default function SidsThaiAdventure() {
                             >
                                 {DESTINATIONS.map((dest, i) => (
                                     <motion.div key={dest.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
-                                        <Card className="h-full bg-white/5 border-white/5 hover:border-white/20 transition-all hover:-translate-y-1">
+                                        <Card className="h-full bg-white/5 border-white/5 hover:border-amber-400/20 transition-all hover:-translate-y-1">
                                             <div className="h-40 overflow-hidden relative rounded-t-xl">
                                                 <img src={dest.image} alt={dest.name} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
                                                 <div className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-black/60 backdrop-blur px-2 py-1 rounded-full text-xs font-medium text-white/90">
@@ -251,7 +464,7 @@ export default function SidsThaiAdventure() {
                                             </CardHeader>
                                             <CardContent>
                                                 <div className="flex items-center gap-2 text-sm text-white/60">
-                                                    <Activity className="w-4 h-4 text-pink-400" />
+                                                    <Activity className="w-4 h-4 text-amber-400" />
                                                     {dest.activity}
                                                 </div>
                                             </CardContent>
@@ -269,11 +482,11 @@ export default function SidsThaiAdventure() {
                             >
                                 {JOURNAL_ENTRIES.map((entry) => (
                                     <div key={entry.id} className="relative pl-8 border-l-2 border-white/10 last:border-0 pb-8 last:pb-0">
-                                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-pink-500 ring-4 ring-black/20" />
+                                        <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-amber-500 ring-4 ring-black/20" />
                                         <Card className="bg-white/5 border-white/5 hover:bg-white/10 transition-colors">
                                             <CardHeader>
                                                 <div className="flex justify-between items-baseline mb-1">
-                                                    <span className="text-xs font-bold tracking-widest text-pink-400 uppercase">{entry.day}</span>
+                                                    <span className="text-xs font-bold tracking-widest text-amber-400 uppercase">{entry.day}</span>
                                                     <div className="flex items-center gap-1 text-xs text-white/40">
                                                         <MapPin className="w-3 h-3" /> {entry.location}
                                                     </div>
@@ -303,7 +516,7 @@ export default function SidsThaiAdventure() {
                                 <Card className="bg-white/10 backdrop-blur-md border-white/10">
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2 text-white">
-                                            <Luggage className="w-5 h-5 text-pink-400" />
+                                            <Luggage className="w-5 h-5 text-amber-400" />
                                             Travel Essentials
                                         </CardTitle>
                                         <CardDescription className="text-white/50">Don't forget these before you fly.</CardDescription>
@@ -395,11 +608,11 @@ export default function SidsThaiAdventure() {
                 <footer className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40">
                     <p>© 2026 Sid's Travel Log — Stay Fun.</p>
                     <div className="flex gap-6">
-                        <span className="hover:text-pink-400 cursor-pointer transition-colors flex items-center gap-2">
+                        <span className="hover:text-amber-400 cursor-pointer transition-colors flex items-center gap-2">
                             <Camera className="w-4 h-4" /> Gallery
                         </span>
-                        <span className="hover:text-pink-400 cursor-pointer transition-colors">Style Guide</span>
-                        <span className="hover:text-pink-400 cursor-pointer transition-colors">Destinations</span>
+                        <span className="hover:text-amber-400 cursor-pointer transition-colors">Style Guide</span>
+                        <span className="hover:text-amber-400 cursor-pointer transition-colors">Destinations</span>
                     </div>
                 </footer>
             </div>
