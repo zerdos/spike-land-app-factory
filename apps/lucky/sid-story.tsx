@@ -10,17 +10,17 @@ import { cn } from '@/lib/utils';
 import confetti from 'canvas-confetti';
 
 const STYLE_ITEMS = [
-    { id: 1, title: 'Linen Essentials', tag: 'Beachwear', desc: 'Breathable white linen shirts for island hopping.', image: '/images/linen_shirt_1770538040525.png' },
-    { id: 2, title: 'Tropical Loafers', tag: 'Footwear', desc: 'Lightweight suede for Bangkok rooftop bars.', image: '/images/tropical_loafers_1770538054021.png' },
-    { id: 3, title: 'Polarized Shades', tag: 'Accessory', desc: 'Classic aviators for that Phi Phi sunset.', image: '/images/polarized_shades_1770538068866.png' },
-    { id: 4, title: 'Tech Shorts', tag: 'Active', desc: 'Quick-dry fabrics for sudden monsoon splashes.', image: '/images/tech_shorts_1770538086323.png' }
+    { id: 1, title: 'Linen Essentials', tag: 'Beachwear', desc: 'Breathable white linen shirts for island hopping.', image: 'https://testing.spike.land/r2/sid-story/linen_shirt_1770538040525.png' },
+    { id: 2, title: 'Tropical Loafers', tag: 'Footwear', desc: 'Lightweight suede for Bangkok rooftop bars.', image: 'https://testing.spike.land/r2/sid-story/tropical_loafers_1770538054021.png' },
+    { id: 3, title: 'Polarized Shades', tag: 'Accessory', desc: 'Classic aviators for that Phi Phi sunset.', image: 'https://testing.spike.land/r2/sid-story/polarized_shades_1770538068866.png' },
+    { id: 4, title: 'Tech Shorts', tag: 'Active', desc: 'Quick-dry fabrics for sudden monsoon splashes.', image: 'https://testing.spike.land/r2/sid-story/tech_shorts_1770538086323.png' }
 ];
 
 const DESTINATIONS = [
-    { id: 1, name: 'Bangkok', vibe: 'Electric', activity: 'Rooftop Bar Hopping', image: '/images/bangkok_city_1770538100661.png', weather: { temp: 32, condition: 'Clear' } },
-    { id: 2, name: 'Phuket', vibe: 'Chill', activity: 'Catamaran Sailing', image: '/images/phuket_sailing_1770538123468.png', weather: { temp: 29, condition: 'Sunny' } },
-    { id: 3, name: 'Chiang Mai', vibe: 'Zen', activity: 'Night Market Food Tours', image: '/images/chiang_mai_market_1770538138747.png', weather: { temp: 26, condition: 'Humid' } },
-    { id: 4, name: 'Koh Samui', vibe: 'Luxury', activity: 'Private Villa Parties', image: '/images/koh_samui_villa_1770538151993.png', weather: { temp: 30, condition: 'Partly Cloudy' } }
+    { id: 1, name: 'Bangkok', vibe: 'Electric', activity: 'Rooftop Bar Hopping', image: 'https://testing.spike.land/r2/sid-story/bangkok_city_1770538100661.png', weather: { temp: 32, condition: 'Clear' } },
+    { id: 2, name: 'Phuket', vibe: 'Chill', activity: 'Catamaran Sailing', image: 'https://testing.spike.land/r2/sid-story/phuket_sailing_1770538123468.png', weather: { temp: 29, condition: 'Sunny' } },
+    { id: 3, name: 'Chiang Mai', vibe: 'Zen', activity: 'Night Market Food Tours', image: 'https://testing.spike.land/r2/sid-story/chiang_mai_market_1770538138747.png', weather: { temp: 26, condition: 'Humid' } },
+    { id: 4, name: 'Koh Samui', vibe: 'Luxury', activity: 'Private Villa Parties', image: 'https://testing.spike.land/r2/sid-story/koh_samui_villa_1770538151993.png', weather: { temp: 30, condition: 'Partly Cloudy' } }
 ];
 
 const JOURNAL_ENTRIES = [
