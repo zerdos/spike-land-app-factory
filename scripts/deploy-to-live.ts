@@ -11,8 +11,13 @@
  * 3. POSTs to testing.spike.land API
  */
 
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ============================================================================
 // Constants
@@ -31,6 +36,9 @@ interface AppState {
   category: string;
   phase: string;
   liveUrl?: string;
+  codeSpaceId?: string;
+  lastSyncHash?: string;
+  localFileHash?: string;
 }
 
 interface StateFile {
@@ -135,20 +143,24 @@ async function deployApp(appName: string, dryRun = false): Promise<void> {
 
   console.log(`   ✅ Validation passed`);
 
+  const codeSpaceId = `c-${appName}`;
+  const liveUrl = `${TESTING_API}/live/${codeSpaceId}`;
+
   if (dryRun) {
-    console.log(`\n📋 DRY RUN - Would deploy to: ${TESTING_API}/live/${appName}`);
+    console.log(`\n📋 DRY RUN - Would deploy to: ${liveUrl}`);
+    console.log(`   CodeSpace: ${codeSpaceId}`);
     console.log(`   File size: ${content.length} bytes`);
     return;
   }
 
-  // Deploy to testing.spike.land
+  // Deploy to testing.spike.land via codeSpace API
   try {
-    const response = await fetch(`${TESTING_API}/api/live/${appName}`, {
+    const response = await fetch(`${TESTING_API}/live/${codeSpaceId}/api/code`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/typescript",
+        "Content-Type": "application/json",
       },
-      body: content,
+      body: JSON.stringify({ code: content, run: true }),
     });
 
     if (!response.ok) {
@@ -156,16 +168,18 @@ async function deployApp(appName: string, dryRun = false): Promise<void> {
       throw new Error(`API error: ${response.status} - ${error}`);
     }
 
-    const result = await response.json();
-    const liveUrl = `${TESTING_API}/live/${appName}`;
+    const codeHash = crypto.createHash("md5").update(content).digest("hex");
 
     console.log(`\n✅ Deployed successfully!`);
     console.log(`   URL: ${liveUrl}`);
+    console.log(`   CodeSpace: ${codeSpaceId}`);
 
-    // Update state with live URL
+    // Update state with live URL and sync info
     const state = loadState();
     if (state.apps[appName]) {
       state.apps[appName].liveUrl = liveUrl;
+      state.apps[appName].codeSpaceId = codeSpaceId;
+      state.apps[appName].localFileHash = codeHash;
       saveState(state);
     }
 
@@ -173,7 +187,8 @@ async function deployApp(appName: string, dryRun = false): Promise<void> {
   } catch (error) {
     // If the API doesn't exist yet, just log the intended URL
     console.log(`\n⚠️  API deployment not available (mock mode)`);
-    console.log(`   Would deploy to: ${TESTING_API}/live/${appName}`);
+    console.log(`   Would deploy to: ${liveUrl}`);
+    console.log(`   CodeSpace: ${codeSpaceId}`);
     console.log(`   File: ${appFile}`);
     console.log(`   Size: ${content.length} bytes`);
   }

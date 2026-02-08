@@ -30,6 +30,9 @@ interface AppState {
   attempts: number;
   lastError?: string;
   liveUrl?: string;
+  codeSpaceId?: string;
+  lastSyncHash?: string;
+  localFileHash?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,7 +52,7 @@ const APPS_DIR = path.join(__dirname, "../apps");
 
 const PHASE_ORDER: Phase[] = ["plan", "develop", "test", "debug", "polish", "complete"];
 
-const CATEGORIES = ["utility", "visualization", "productivity", "interactive", "health", "dogs", "lucky"];
+const CATEGORIES = ["utility", "visualization", "productivity", "interactive", "health", "dogs", "lucky", "imported"];
 
 // ============================================================================
 // State Management

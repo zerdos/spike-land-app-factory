@@ -14,7 +14,9 @@
     "orchestrate:status": "tsx scripts/orchestrate.ts status",
     "orchestrate:init": "tsx scripts/orchestrate.ts init",
     "deploy": "tsx scripts/deploy-to-live.ts",
-    "sync": "tsx scripts/sync-to-mono.ts",
+    "sync:mono": "tsx scripts/sync-to-mono.ts",
+    "sync:download": "tsx scripts/sync-download.ts",
+    "sync:upload": "tsx scripts/sync-upload.ts",
     "prompt": "tsx scripts/generate-prompt.ts"
   },
   "dependencies": {
@@ -87,7 +89,8 @@
     "tailwindcss": "^3.4.11",
     "tsx": "^4.19.0",
     "typescript": "^5.6.2",
-    "vite": "^5.4.5"
+    "vite": "^5.4.5",
+    "wrangler": "^4.0.0"
   },
   "engines": {
     "node": ">=20.0.0"

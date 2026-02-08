@@ -1,0 +1,13 @@
+# CLI-only config for wrangler kv/r2 access to testing.spike.land resources.
+# This is NOT a deployable Worker.
+name = "app-factory-sync"
+account_id = "1f98921051196545ebe79a450d3c71ed"
+compatibility_date = "2025-07-12"
+
+kv_namespaces = [
+  { binding = "KV", id = "7cafeba860c9485bbfca337099c82ce3" }
+]
+
+[[r2_buckets]]
+binding = "X9"
+bucket_name = "code-chain"
