@@ -18,7 +18,8 @@
     "sync:mono": "tsx scripts/sync-to-mono.ts",
     "sync:download": "tsx scripts/sync-download.ts",
     "sync:upload": "tsx scripts/sync-upload.ts",
-    "prompt": "tsx scripts/generate-prompt.ts"
+    "prompt": "tsx scripts/generate-prompt.ts",
+    "download:all": "tsx scripts/download-all-codespaces.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
