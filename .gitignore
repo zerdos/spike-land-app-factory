@@ -45,3 +45,6 @@ coverage
 
 # State history logs (keep apps.json but not individual logs)
 .state/history/*.log
+
+# Feedback snapshots
+.state/snapshots/

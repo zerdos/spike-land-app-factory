@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useLocation } from "@/hooks/use-location";
+import { WorkspaceView } from "@/components/workspace-view";
 
 class ErrorBoundary extends Component<{ children: ReactNode; onReset: () => void }, { error: string | null }> {
   state = { error: null as string | null };
@@ -57,9 +59,15 @@ const appEntries = Object.keys(appModules).map((path) => {
 });
 
 function App() {
+  const { pathname, navigate } = useLocation();
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateName | null>(null);
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("preview");
+
+  const createMatch = pathname.match(/^\/create\/([^/]+)\/?$/);
+  if (createMatch) {
+    return <WorkspaceView appName={createMatch[1]} onBack={() => navigate("/")} />;
+  }
 
   const activeApp = selectedApp ? appEntries.find((a) => a.key === selectedApp) : null;
   const SelectedComponent = selectedTemplate
@@ -201,12 +209,19 @@ function App() {
                       </div>
                       <CardDescription>{app.key}.tsx</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="flex gap-2">
                       <Button
-                        className="w-full"
+                        className="flex-1"
                         onClick={() => { setSelectedApp(app.key); setSelectedTemplate(null); setActiveTab("preview"); }}
                       >
                         Preview
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => navigate(`/create/${app.name}`)}
+                      >
+                        Live Workspace
                       </Button>
                     </CardContent>
                   </Card>

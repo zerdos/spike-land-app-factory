@@ -13,6 +13,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from 'url';
+import { snapshotBrokenCode, hasSnapshot, createFeedbackIssue } from "./create-feedback-issue.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -300,6 +301,14 @@ function cmdAdvance(appName: string, success: boolean, reason?: string): void {
 
     console.log(`✅ ${appName}: ${previousPhase} → ${app.phase}`);
 
+    if (hasSnapshot(appName)) {
+      try {
+        createFeedbackIssue(appName);
+      } catch (err) {
+        console.warn(`  ⚠️  Feedback issue creation failed: ${err}`);
+      }
+    }
+
     if (app.phase === "complete") {
       console.log(`\n🎉 App "${appName}" is complete!`);
       console.log(`   Run 'yarn sync' to sync to the monorepo.`);
@@ -307,6 +316,8 @@ function cmdAdvance(appName: string, success: boolean, reason?: string): void {
   } else {
     app.attempts++;
     app.lastError = reason || "Unknown failure";
+
+    snapshotBrokenCode(appName, app.category, previousPhase, app.lastError);
 
     logHistory(appName, "phase_failed", {
       phase: previousPhase,
