@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Check, Trash2, Circle, ListTodo, Sparkles, Target } from "lucide-react";
+import { Plus, Check, Trash2, Circle, ListTodo, Sparkles, Target, Undo2 } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
@@ -18,15 +18,30 @@ const CATEGORIES = [
   { name: 'Health', emoji: '\u{1F4AA}' },
 ];
 
-export default function App() {
-  const [tasks, setTasks] = useState([
+const STORAGE_KEY = 'focusflow-tasks';
+
+function loadTasks() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch {}
+  return [
     { id: 1, text: 'Design new landing page', category: 'Work', completed: false },
     { id: 2, text: 'Morning workout', category: 'Health', completed: true },
     { id: 3, text: 'Buy groceries for the week', category: 'Shopping', completed: false },
-  ]);
+  ];
+}
+
+export default function App() {
+  const [tasks, setTasks] = useState(loadTasks);
   const [input, setInput] = useState('');
   const [activeCategory, setActiveCategory] = useState('Work');
   const [filter, setFilter] = useState('all');
+  const [lastDeleted, setLastDeleted] = useState<{ id: number; text: string; category: string; completed: boolean } | null>(null);
+
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); } catch {}
+  }, [tasks]);
 
   const stats = useMemo(() => {
     const total = tasks.length;
@@ -60,8 +75,21 @@ export default function App() {
   };
 
   const deleteTask = (id: number) => {
+    const task = tasks.find(t => t.id === id);
+    if (task) setLastDeleted(task);
     setTasks(tasks.filter(t => t.id !== id));
-    toast.info('Task removed');
+    toast.info('Task removed', {
+      action: {
+        label: 'Undo',
+        onClick: () => {
+          if (task) {
+            setTasks(prev => [task, ...prev]);
+            setLastDeleted(null);
+            toast.success('Task restored');
+          }
+        },
+      },
+    });
   };
 
   const getCategoryEmoji = (name: string) => {
@@ -242,10 +270,18 @@ export default function App() {
             size="sm"
             className="text-xs text-muted-foreground/70 hover:text-destructive/80 h-auto py-1 px-2"
             onClick={() => {
-              const count = tasks.filter(t => t.completed).length;
-              if (count > 0) {
+              const completed = tasks.filter(t => t.completed);
+              if (completed.length > 0) {
                 setTasks(tasks.filter(t => !t.completed));
-                toast.info(`Cleared ${count} completed task${count > 1 ? 's' : ''}`);
+                toast.info(`Cleared ${completed.length} completed task${completed.length > 1 ? 's' : ''}`, {
+                  action: {
+                    label: 'Undo',
+                    onClick: () => {
+                      setTasks(prev => [...prev, ...completed]);
+                      toast.success('Tasks restored');
+                    },
+                  },
+                });
               }
             }}
           >

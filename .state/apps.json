@@ -6,7 +6,10 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:02:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "crubik3d",
+      "lastSyncHash": "oElJxoEl",
+      "liveUrl": "https://testing.spike.land/live/crubik3d"
     },
     "rubik-cube": {
       "name": "rubik-cube",
@@ -14,7 +17,10 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-06T23:00:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "crubikcube",
+      "lastSyncHash": "KrFIVKrF",
+      "liveUrl": "https://testing.spike.land/live/crubikcube"
     },
     "alarm-studio": {
       "name": "alarm-studio",
@@ -22,15 +28,21 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-08T11:54:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "calarmstudio",
+      "lastSyncHash": "CFNdnCFN",
+      "liveUrl": "https://testing.spike.land/live/calarmstudio"
     },
     "social-canvas": {
       "name": "social-canvas",
       "category": "interactive",
-      "phase": "develop",
+      "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T21:33:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "csocialcanvas",
+      "lastSyncHash": "cpqkF0cp",
+      "liveUrl": "https://testing.spike.land/live/csocialcanvas"
     },
     "focusflow": {
       "name": "focusflow",
@@ -38,7 +50,10 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:49:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "c-focusflow",
+      "lastSyncHash": "bcIsv4bc",
+      "liveUrl": "https://testing.spike.land/live/c-focusflow"
     },
     "sid-thai-adventure": {
       "name": "sid-thai-adventure",
@@ -68,8 +83,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:38:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z"
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "csubscriptionupdate",
+      "lastSyncHash": "bwnPN1bw",
+      "liveUrl": "https://testing.spike.land/live/csubscriptionupdate"
     }
   },
-  "lastUpdated": "2026-02-10T12:00:00.000Z"
+  "lastUpdated": "2026-02-10T18:00:00.000Z"
 }

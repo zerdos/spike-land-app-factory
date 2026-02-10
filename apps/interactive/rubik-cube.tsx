@@ -178,6 +178,7 @@ export default function RubiksGame() {
   const [timer, setTimer] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [isSolved, setIsSolved] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | undefined;
@@ -222,7 +223,12 @@ export default function RubiksGame() {
   };
 
   const reset = () => {
-    window.location.reload();
+    setMoveQueue([]);
+    setMoveCount(0);
+    setTimer(0);
+    setIsActive(false);
+    setIsSolved(false);
+    setResetKey(k => k + 1);
   };
 
   const formatTime = (s: number) => {
@@ -288,7 +294,7 @@ export default function RubiksGame() {
             <ambientLight intensity={0.6} />
             <pointLight position={[10, 10, 10]} intensity={1.5} />
             <pointLight position={[-10, -10, -10]} intensity={0.5} />
-            <Cube moves={moveQueue} onMoveEnd={handleMoveEnd} />
+            <Cube key={resetKey} moves={moveQueue} onMoveEnd={handleMoveEnd} />
             <gridHelper args={[20, 20, 0x333333, 0x222222]} position={[0, -3, 0]} />
           </Canvas>
         </div>
