@@ -1,101 +1,75 @@
 {
   "apps": {
-    "pomodoro-timer": {
-      "name": "pomodoro-timer",
-      "category": "utility",
+    "rubik-3d": {
+      "name": "rubik-3d",
+      "category": "interactive",
+      "phase": "complete",
+      "attempts": 0,
+      "createdAt": "2026-02-09T07:02:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
+    },
+    "rubik-cube": {
+      "name": "rubik-cube",
+      "category": "interactive",
+      "phase": "complete",
+      "attempts": 0,
+      "createdAt": "2026-02-06T23:00:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
+    },
+    "alarm-studio": {
+      "name": "alarm-studio",
+      "category": "interactive",
+      "phase": "complete",
+      "attempts": 0,
+      "createdAt": "2026-02-08T11:54:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
+    },
+    "social-canvas": {
+      "name": "social-canvas",
+      "category": "interactive",
       "phase": "develop",
       "attempts": 0,
-      "createdAt": "2026-01-18T22:00:44.310Z",
-      "updatedAt": "2026-01-18T22:34:44.970Z"
+      "createdAt": "2026-02-09T21:33:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
     },
-    "bookmark-manager": {
-      "name": "bookmark-manager",
+    "focusflow": {
+      "name": "focusflow",
       "category": "productivity",
-      "phase": "plan",
+      "phase": "complete",
       "attempts": 0,
-      "createdAt": "2026-01-18T22:38:06.476Z",
-      "updatedAt": "2026-01-18T22:38:14.182Z"
+      "createdAt": "2026-02-09T07:49:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
     },
-    "calculator": {
-      "name": "calculator",
-      "category": "utility",
-      "phase": "debug",
+    "sid-thai-adventure": {
+      "name": "sid-thai-adventure",
+      "category": "lucky",
+      "phase": "complete",
       "attempts": 0,
-      "createdAt": "2026-01-18T23:04:52.759Z",
-      "updatedAt": "2026-01-26T14:27:20.654Z",
-      "julesSessionId": "12281749160856180811",
-      "julesSessionUrl": "https://jules.google.com/session/12281749160856180811",
-      "julesSessionState": "IN_PROGRESS"
+      "createdAt": "2026-02-08T11:55:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "codeSpaceId": "c-419f2869",
+      "lastSyncHash": "RxGcCRxG",
+      "liveUrl": "https://testing.spike.land/live/c-419f2869"
     },
-    "unit-converter": {
-      "name": "unit-converter",
-      "category": "utility",
-      "phase": "polish",
-      "attempts": 0,
-      "createdAt": "2026-01-18T23:08:01.281Z",
-      "updatedAt": "2026-01-26T14:27:25.776Z",
-      "julesSessionId": "9619625578846931708",
-      "julesSessionUrl": "https://jules.google.com/session/9619625578846931708",
-      "julesSessionState": "IN_PROGRESS"
-    },
-    "puppy-age-calculator": {
-      "name": "puppy-age-calculator",
-      "category": "dogs",
-      "phase": "polish",
-      "attempts": 1,
-      "createdAt": "2026-01-18T23:14:21.702Z",
-      "updatedAt": "2026-01-19T01:22:24.964Z"
-    },
-    "dog-name-generator": {
-      "name": "dog-name-generator",
+    "leave-it-training": {
+      "name": "leave-it-training",
       "category": "dogs",
       "phase": "complete",
       "attempts": 0,
-      "createdAt": "2026-01-18T23:17:02.169Z",
-      "updatedAt": "2026-01-19T00:15:10.703Z"
-    },
-    "age-calculator": {
-      "name": "age-calculator",
-      "category": "utility",
-      "phase": "test",
-      "attempts": 1,
-      "createdAt": "2026-01-18T23:59:46.294Z",
-      "updatedAt": "2026-01-19T00:51:14.922Z"
-    },
-    "419f2869": {
-      "name": "419f2869",
-      "category": "imported",
-      "phase": "develop",
-      "attempts": 0,
-      "createdAt": "2026-02-08T10:35:46.837Z",
-      "updatedAt": "2026-02-08T11:55:39.827Z",
-      "codeSpaceId": "c-419f2869",
-      "lastSyncHash": "RxGcCRxG",
-      "localFileHash": "cffa6f4045599b3bd79f88654fb70afe",
-      "liveUrl": "https://testing.spike.land/live/c-419f2869"
-    },
-    "47a5893f": {
-      "name": "47a5893f",
-      "category": "imported",
-      "phase": "develop",
-      "attempts": 0,
-      "createdAt": "2026-02-08T10:35:47.054Z",
-      "updatedAt": "2026-02-08T11:55:40.624Z",
+      "createdAt": "2026-02-08T11:55:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "c-47a5893f",
       "lastSyncHash": "bfWsOZbf",
-      "localFileHash": "c73a30d7361b18a697be3de18388e7f4",
       "liveUrl": "https://testing.spike.land/live/c-47a5893f"
     },
-    "5cfec3c0": {
-      "name": "5cfec3c0",
-      "category": "imported",
-      "phase": "develop",
+    "subscription-update": {
+      "name": "subscription-update",
+      "category": "utility",
+      "phase": "complete",
       "attempts": 0,
-      "createdAt": "2026-02-08T11:12:34.787Z",
-      "updatedAt": "2026-02-08T11:12:34.787Z",
-      "codeSpaceId": "c-5cfec3c0",
-      "lastSyncHash": "amVHr4am"
+      "createdAt": "2026-02-09T07:38:00.000Z",
+      "updatedAt": "2026-02-10T12:00:00.000Z"
     }
   },
-  "lastUpdated": "2026-02-08T11:55:41.309Z"
+  "lastUpdated": "2026-02-10T12:00:00.000Z"
 }
