@@ -175,7 +175,7 @@ function getVibeColor(level: number) {
     return 'from-green-400 to-emerald-500';
 }
 
-export default function SidsThaiAdventure() {
+export default function App() {
     const [funLevel, setFunLevel] = useState(85);
     const [activeTab, setActiveTab] = useState('style');
     const [packingList, setPackingList] = useState(PACKING_LIST);
@@ -349,14 +349,15 @@ export default function SidsThaiAdventure() {
                                         funLevel >= 95 ? "text-red-400" : "text-yellow-400"
                                     )}>{funLevel}%</span>
                                 </div>
-                                <Progress
-                                    value={funLevel}
-                                    className={cn(
-                                        "h-3 bg-black/40",
-                                        `indicator:bg-gradient-to-r indicator:${getVibeColor(funLevel)}`,
-                                        funLevel >= 95 && "animate-pulse"
-                                    )}
-                                />
+                                <div className="relative h-3 bg-black/40 rounded-full overflow-hidden">
+                                    <motion.div
+                                        className={cn("h-full rounded-full bg-gradient-to-r", getVibeColor(funLevel))}
+                                        initial={false}
+                                        animate={{ width: `${funLevel}%` }}
+                                        transition={{ duration: 0.5, ease: "easeOut" }}
+                                    />
+                                    {funLevel >= 95 && <div className="absolute inset-0 animate-pulse bg-white/10 rounded-full" />}
+                                </div>
                                 <Button
                                     onClick={handleFunBoost}
                                     disabled={partyMode}
@@ -427,7 +428,7 @@ export default function SidsThaiAdventure() {
                                             <Badge className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md border-white/10 hover:bg-black/80 pointer-events-none">
                                                 {item.tag}
                                             </Badge>
-                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                                         </div>
                                         <CardHeader className="-mt-12 relative z-20">
                                             <CardTitle className="text-2xl text-white">{item.title}</CardTitle>
@@ -448,7 +449,7 @@ export default function SidsThaiAdventure() {
                                     <motion.div key={dest.id} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
                                         <Card className="h-full bg-white/5 border-white/5 hover:border-amber-400/20 transition-all hover:-translate-y-1">
                                             <div className="h-40 overflow-hidden relative rounded-t-xl">
-                                                <img src={dest.image} alt={dest.name} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" />
+                                                <img src={dest.image} alt={dest.name} className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                                                 <div className="absolute bottom-2 right-2 flex items-center gap-1.5 bg-black/60 backdrop-blur px-2 py-1 rounded-full text-xs font-medium text-white/90">
                                                     {getWeatherIcon(dest.weather.condition)}
                                                     {dest.weather.temp}°C
@@ -606,11 +607,11 @@ export default function SidsThaiAdventure() {
                 <footer className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/40">
                     <p>© 2026 Sid's Travel Log — Stay Fun.</p>
                     <div className="flex gap-6">
-                        <span className="hover:text-amber-400 cursor-pointer transition-colors flex items-center gap-2">
+                        <button className="hover:text-amber-400 transition-colors flex items-center gap-2" onClick={() => setActiveTab('style')}>
                             <Camera className="w-4 h-4" /> Gallery
-                        </span>
-                        <span className="hover:text-amber-400 cursor-pointer transition-colors">Style Guide</span>
-                        <span className="hover:text-amber-400 cursor-pointer transition-colors">Destinations</span>
+                        </button>
+                        <button className="hover:text-amber-400 transition-colors" onClick={() => setActiveTab('style')}>Style Guide</button>
+                        <button className="hover:text-amber-400 transition-colors" onClick={() => setActiveTab('spots')}>Destinations</button>
                     </div>
                 </footer>
             </div>

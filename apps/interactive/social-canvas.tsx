@@ -7,8 +7,8 @@
   import {
     Heart, MessageCircle, Share2, Bookmark, Search, Bell, Home, User, Settings,
     MoreHorizontal, Send, Smile, Plus, Camera, Image, BarChart3, MapPin, Link2,
-    Calendar, X, Check, TrendingUp, Users, Hash, Flame, Copy, Repeat2,
-    Sparkles, Globe, Lock, AtSign, Zap, Trash2, AlertTriangle, Mail
+    Calendar, X, Check, TrendingUp, Users, Hash, Copy, Repeat2,
+    Sparkles, Globe, Lock, AtSign, Zap, Trash2, AlertTriangle
   } from 'lucide-react';
   import { Button } from '@/components/ui/button';
   import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -179,7 +179,7 @@
       }
       case 'BM': return {...s,posts:s.posts.map(p=>p.id===a.pid?{...p,bookmarked:!p.bookmarked}:p)};
       case 'TCMT': return {...s,posts:s.posts.map(p=>p.id===a.pid?{...p,showComments:!p.showComments}:p)};
-      case 'ACMT': return {...s,posts:s.posts.map(p=>p.id!==a.pid?p:{...p,comments:[...p.comments,{id:`c${Date.now()}`,authorId:'me',content:a.c,createdAt:new Date(),likes:0,liked:false}],showComments:true})};
+      case 'ACMT': return {...s,posts:s.posts.map(p=>p.id!==a.pid?p:{...p,comments:[...p.comments,{id:`c${Date.now()}_${Math.random().toString(36).slice(2,6)}`,authorId:'me',content:a.c,createdAt:new Date(),likes:0,liked:false}],showComments:true})};
       case 'LCMT': return {...s,posts:s.posts.map(p=>p.id!==a.pid?p:{...p,comments:p.comments.map(c=>c.id!==a.cid?c:{...c,liked:!c.liked,likes:c.liked?c.likes-1:c.likes+1})})};
       case 'VOTE': return {...s,posts:s.posts.map(p=>{
         if(p.id!==a.pid||!p.poll||p.poll.voted!==null)return p;

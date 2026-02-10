@@ -18,48 +18,18 @@ const useSounds = () => {
 
   const getAudioContext = useCallback(() => {
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      try {
+        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      } catch {
+        return null;
+      }
     }
     return audioCtxRef.current;
   }, []);
 
-  const playClick = useCallback(() => {
-    const ctx = getAudioContext();
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    
-    osc.type = 'square';
-    osc.frequency.value = 2000;
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
-    
-    osc.connect(gain).connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.03);
-  }, [getAudioContext]);
-
-  const playChime = useCallback(() => {
-    const ctx = getAudioContext();
-    const now = ctx.currentTime;
-    
-    [523, 659].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.2, now + i * 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.1);
-      
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(now + i * 0.1);
-      osc.stop(now + i * 0.1 + 0.1);
-    });
-  }, [getAudioContext]);
-
   const playSuccess = useCallback(() => {
     const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     
     [523, 659, 784].forEach((freq, i) => {
@@ -77,32 +47,9 @@ const useSounds = () => {
     });
   }, [getAudioContext]);
 
-  const playSniff = useCallback(() => {
-    const ctx = getAudioContext();
-    const now = ctx.currentTime;
-    const bufferSize = ctx.sampleRate * 0.05;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-    
-    const source = ctx.createBufferSource();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-    
-    source.buffer = buffer;
-    filter.type = 'lowpass';
-    filter.frequency.value = 800;
-    gain.gain.value = 0.05;
-    
-    source.connect(filter).connect(gain).connect(ctx.destination);
-    source.start(now);
-  }, [getAudioContext]);
-
   const playCelebration = useCallback(() => {
     const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     
     // Main arpeggio
@@ -136,7 +83,7 @@ const useSounds = () => {
     });
   }, [getAudioContext]);
 
-  return { playClick, playChime, playSuccess, playSniff, playCelebration };
+  return { playSuccess, playCelebration };
 };
 
 // ============================================================================
@@ -531,7 +478,7 @@ const StepCard: React.FC<StepCardProps> = ({ step, index, isCompleted, onMarkCom
 // Main Component
 // ============================================================================
 
-export default function LeaveItTraining() {
+export default function App() {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const { playSuccess, playCelebration } = useSounds();
   const [showGraduation, setShowGraduation] = useState(false);
@@ -579,8 +526,8 @@ export default function LeaveItTraining() {
           50% { transform: translateY(3px); }
         }
         @keyframes pulse-node {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4); }
-          50% { box-shadow: 0 0 0 8px rgba(var(--primary-rgb), 0); }
+          0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4); }
+          50% { box-shadow: 0 0 0 8px hsl(var(--primary) / 0); }
         }
         @keyframes treat-glow {
           0%, 100% { filter: drop-shadow(0 0 2px rgba(139, 69, 19, 0.6)); }

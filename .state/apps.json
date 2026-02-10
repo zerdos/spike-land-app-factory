@@ -8,7 +8,7 @@
       "createdAt": "2026-02-09T07:02:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "crubik3d",
-      "lastSyncHash": "oElJxoEl",
+      "lastSyncHash": "bQWgCMbQ",
       "liveUrl": "https://testing.spike.land/live/crubik3d"
     },
     "rubik-cube": {
@@ -19,7 +19,7 @@
       "createdAt": "2026-02-06T23:00:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "crubikcube",
-      "lastSyncHash": "KrFIVKrF",
+      "lastSyncHash": "EnsZjEns",
       "liveUrl": "https://testing.spike.land/live/crubikcube"
     },
     "alarm-studio": {
@@ -30,7 +30,7 @@
       "createdAt": "2026-02-08T11:54:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "calarmstudio",
-      "lastSyncHash": "CFNdnCFN",
+      "lastSyncHash": "zm99zm99",
       "liveUrl": "https://testing.spike.land/live/calarmstudio"
     },
     "social-canvas": {
@@ -41,7 +41,7 @@
       "createdAt": "2026-02-09T21:33:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "csocialcanvas",
-      "lastSyncHash": "cpqkF0cp",
+      "lastSyncHash": "bkDT77bk",
       "liveUrl": "https://testing.spike.land/live/csocialcanvas"
     },
     "focusflow": {
@@ -52,7 +52,7 @@
       "createdAt": "2026-02-09T07:49:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "c-focusflow",
-      "lastSyncHash": "bcIsv4bc",
+      "lastSyncHash": "aEDt55aE",
       "liveUrl": "https://testing.spike.land/live/c-focusflow"
     },
     "sid-thai-adventure": {
@@ -63,7 +63,7 @@
       "createdAt": "2026-02-08T11:55:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "c-419f2869",
-      "lastSyncHash": "RxGcCRxG",
+      "lastSyncHash": "HMiK0HMi",
       "liveUrl": "https://testing.spike.land/live/c-419f2869"
     },
     "leave-it-training": {
@@ -74,7 +74,7 @@
       "createdAt": "2026-02-08T11:55:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "c-47a5893f",
-      "lastSyncHash": "bfWsOZbf",
+      "lastSyncHash": "cbErYRcb",
       "liveUrl": "https://testing.spike.land/live/c-47a5893f"
     },
     "subscription-update": {
@@ -85,7 +85,7 @@
       "createdAt": "2026-02-09T07:38:00.000Z",
       "updatedAt": "2026-02-10T12:00:00.000Z",
       "codeSpaceId": "csubscriptionupdate",
-      "lastSyncHash": "bwnPN1bw",
+      "lastSyncHash": "bpRdl8bp",
       "liveUrl": "https://testing.spike.land/live/csubscriptionupdate"
     }
   },

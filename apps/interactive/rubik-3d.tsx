@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Play, RotateCcw, Zap, HelpCircle, Keyboard, Trophy, Wand2, Pause, BookOpen, GraduationCap, Eye, ChevronRight } from "lucide-react";
@@ -374,9 +374,11 @@ export default function App() {
   const showMeModeRef = useRef(false);
   const currentStepRef = useRef(0);
 
-  // Force dark mode on mount
+  // Apply dark class for dark mode styling
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    const root = document.documentElement;
+    if (!root.classList.contains('dark')) root.classList.add('dark');
+    return () => {};
   }, []);
 
   // Keep refs in sync
@@ -1006,7 +1008,7 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2 text-white">
             <Zap className="text-indigo-400 fill-indigo-400" /> Rubik&apos;s Cube 3D
           </h1>
-          <p className="text-zinc-400 text-sm font-medium">Photorealistic Cube Simulator</p>
+          <p className="text-muted-foreground text-sm font-medium">Photorealistic Cube Simulator</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
@@ -1022,7 +1024,7 @@ export default function App() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full max-w-5xl flex-1">
         {/* 3D Canvas Card */}
-        <Card className="lg:col-span-8 bg-zinc-900/50 backdrop-blur-md border-zinc-700/50 shadow-2xl relative overflow-hidden min-h-[500px]">
+        <Card className="lg:col-span-8 bg-card/50 backdrop-blur-md border-border/50 shadow-2xl relative overflow-hidden min-h-[500px]">
           <div ref={containerRef} className="absolute inset-0 cursor-grab active:cursor-grabbing" />
 
           {/* Solve progress overlay */}
@@ -1032,20 +1034,20 @@ export default function App() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="absolute top-2 left-2 right-2 z-10 bg-zinc-900/90 backdrop-blur-sm rounded-lg p-3 border border-zinc-700/50"
+                className="absolute top-2 left-2 right-2 z-10 bg-card/90 backdrop-blur-sm rounded-lg p-3 border border-border/50"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                     <Wand2 className="h-3.5 w-3.5" /> Solving...
                   </span>
-                  <Button variant="ghost" size="sm" onClick={cancelSolve} className="h-6 px-2 text-xs text-zinc-300">
+                  <Button variant="ghost" size="sm" onClick={cancelSolve} className="h-6 px-2 text-xs text-foreground/80">
                     <Pause className="h-3 w-3 mr-1" /> Cancel
                   </Button>
                 </div>
                 <Progress value={solveProgress} className="h-1.5" />
                 <div className="flex gap-1 mt-2 flex-wrap">
                   {solveQueue.slice(0, 12).map((m, i) => (
-                    <span key={`solve-${i}`} className={`font-mono text-xs px-1.5 py-0.5 rounded ${i === 0 ? 'bg-indigo-500 text-white font-bold' : 'bg-zinc-800 text-zinc-400'}`}>
+                    <span key={`solve-${i}`} className={`font-mono text-xs px-1.5 py-0.5 rounded ${i === 0 ? 'bg-indigo-500 text-white font-bold' : 'bg-zinc-800 text-muted-foreground'}`}>
                       {m}
                     </span>
                   ))}
@@ -1090,7 +1092,7 @@ export default function App() {
                   className={`px-6 py-3 rounded-xl font-mono text-2xl font-bold border-2 transition-colors duration-300 ${
                     feedbackType === 'correct' ? 'bg-green-500/20 border-green-500/50 text-green-400' :
                     feedbackType === 'wrong' ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' :
-                    'bg-zinc-900/80 border-indigo-500/30 text-white'
+                    'bg-card/80 border-indigo-500/30 text-white'
                   }`}
                 >
                   {algorithmIndex < currentAlgorithm.length ? (
@@ -1127,7 +1129,7 @@ export default function App() {
         </Card>
 
         {/* Side Panel with Tabs */}
-        <Card className="lg:col-span-4 bg-zinc-900/70 backdrop-blur-md border-zinc-700/50 flex flex-col">
+        <Card className="lg:col-span-4 bg-card/70 backdrop-blur-md border-border/50 flex flex-col">
           <CardContent className="p-5 flex-1 flex flex-col">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
               <TabsList className="grid grid-cols-2 mb-4">
@@ -1145,7 +1147,7 @@ export default function App() {
 
               <TabsContent value="freeplay" className="flex-1 space-y-5 mt-0">
                 <div className="space-y-3">
-                  <h3 className="font-bold text-sm uppercase tracking-wider text-zinc-300">Face Moves</h3>
+                  <h3 className="font-bold text-sm uppercase tracking-wider text-foreground/80">Face Moves</h3>
                   <div className="grid grid-cols-3 gap-2">
                     {Object.keys(MOVES).map(m => (
                       <div key={m} className="flex flex-col gap-1">
@@ -1160,7 +1162,7 @@ export default function App() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-xs text-zinc-400"
+                          className="text-xs text-muted-foreground"
                           onClick={() => doMove(m + "'")}
                           disabled={isSolved || mode !== 'freeplay'}
                         >
@@ -1172,10 +1174,10 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3">
-                  <h3 className="font-bold text-sm uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+                  <h3 className="font-bold text-sm uppercase tracking-wider text-foreground/80 flex items-center gap-2">
                     History <Play className="h-3 w-3" />
                   </h3>
-                  <div className="flex flex-wrap gap-1.5 min-h-[50px] p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/30">
+                  <div className="flex flex-wrap gap-1.5 min-h-[50px] p-3 rounded-lg bg-muted/50 border border-border/30">
                     <AnimatePresence mode="popLayout">
                       {moveHistory.length === 0 && <span className="text-zinc-500 text-xs italic">No moves yet...</span>}
                       {moveHistory.map((m, i) => (
@@ -1193,12 +1195,12 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-zinc-700/50 space-y-3">
-                  <div className="flex items-start gap-3 text-xs text-zinc-400">
+                <div className="pt-3 border-t border-border/50 space-y-3">
+                  <div className="flex items-start gap-3 text-xs text-muted-foreground">
                     <Keyboard className="h-4 w-4 mt-0.5 shrink-0" />
-                    <p><b className="text-zinc-300">Keyboard:</b> u/d/l/r/f/b for moves, Shift+key for prime, s scramble, a auto-solve, t teach.</p>
+                    <p><b className="text-foreground/80">Keyboard:</b> u/d/l/r/f/b for moves, Shift+key for prime, s scramble, a auto-solve, t teach.</p>
                   </div>
-                  <div className="flex items-start gap-3 text-xs text-zinc-400">
+                  <div className="flex items-start gap-3 text-xs text-muted-foreground">
                     <HelpCircle className="h-4 w-4 mt-0.5 shrink-0" />
                     <p>Drag to orbit. Scroll to zoom.</p>
                   </div>
@@ -1214,7 +1216,7 @@ export default function App() {
                   >
                     <Trophy className="mx-auto text-yellow-400" size={48} />
                     <h3 className="text-xl font-bold text-white">Congratulations</h3>
-                    <p className="text-sm text-zinc-400">You&apos;ve learned the beginner method.</p>
+                    <p className="text-sm text-muted-foreground">You&apos;ve learned the beginner method.</p>
                     <Button onClick={enterTeachingMode} variant="outline" size="sm" className="gap-2">
                       <RotateCcw className="h-3.5 w-3.5" /> Start Over
                     </Button>
@@ -1225,10 +1227,10 @@ export default function App() {
                       {/* Step progress */}
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                             Step {currentStep + 1} of {TEACHING_STEPS.length}
                           </span>
-                          <Badge variant="outline" className="text-xs border-zinc-600 text-zinc-300">
+                          <Badge variant="outline" className="text-xs border-border text-foreground/80">
                             {stepPhase === 'intro' ? 'Read' : stepPhase === 'practice' ? 'Practice' : 'Done'}
                           </Badge>
                         </div>
@@ -1247,18 +1249,18 @@ export default function App() {
                       {/* Description */}
                       {stepPhase === 'intro' && currentTeachingStep && (
                         <>
-                          <p className="text-sm text-zinc-300 leading-relaxed">
+                          <p className="text-sm text-foreground/80 leading-relaxed">
                             {currentTeachingStep.description}
                           </p>
 
                           {/* What to look for */}
                           <div className="space-y-2">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
                               <Eye className="h-3.5 w-3.5 text-indigo-400" /> What to look for
                             </h4>
                             <ul className="space-y-1">
                               {currentTeachingStep.recognition.map((item, i) => (
-                                <li key={`rec-${i}`} className="text-xs text-zinc-400 flex items-start gap-2">
+                                <li key={`rec-${i}`} className="text-xs text-muted-foreground flex items-start gap-2">
                                   <span className="text-indigo-400 mt-0.5">&#8226;</span>
                                   {item}
                                 </li>
@@ -1268,11 +1270,11 @@ export default function App() {
 
                           {/* Algorithm cards */}
                           <div className="space-y-2">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
                               <BookOpen className="h-3.5 w-3.5 text-indigo-400" /> Algorithms
                             </h4>
                             {currentTeachingStep.algorithms.map((algo, i) => (
-                              <div key={`algo-${i}`} className="rounded-lg bg-zinc-800/60 border border-zinc-700/40 p-3 space-y-1.5">
+                              <div key={`algo-${i}`} className="rounded-lg bg-muted/60 border border-border/40 p-3 space-y-1.5">
                                 <div className="flex items-center justify-between">
                                   <span className="text-sm font-semibold text-white">{algo.name}</span>
                                 </div>
@@ -1290,12 +1292,12 @@ export default function App() {
 
                           {/* Tips */}
                           <div className="space-y-2">
-                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300 flex items-center gap-1.5">
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/80 flex items-center gap-1.5">
                               <HelpCircle className="h-3.5 w-3.5 text-yellow-400" /> Tips
                             </h4>
                             <ul className="space-y-1">
                               {currentTeachingStep.tips.map((tip, i) => (
-                                <li key={`tip-${i}`} className="text-xs text-zinc-400 flex items-start gap-2">
+                                <li key={`tip-${i}`} className="text-xs text-muted-foreground flex items-start gap-2">
                                   <span className="text-yellow-400 mt-0.5">&#9733;</span>
                                   {tip}
                                 </li>
@@ -1308,8 +1310,8 @@ export default function App() {
                       {/* Practice phase: algorithm display */}
                       {stepPhase === 'practice' && currentAlgorithm.length > 0 && (
                         <div className="space-y-2">
-                          <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">Algorithm</h4>
-                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/30">
+                          <h4 className="text-xs font-semibold uppercase tracking-wider text-foreground/80">Algorithm</h4>
+                          <div className="flex flex-wrap gap-1.5 p-3 rounded-lg bg-muted/50 border border-border/30">
                             {currentAlgorithm.map((m, i) => (
                               <span
                                 key={`alg-${i}`}
@@ -1348,7 +1350,7 @@ export default function App() {
                               onClick={() => { setAlgorithmIndex(0); setShowMeMode(false); }}
                               variant="ghost"
                               size="sm"
-                              className="gap-1.5 text-zinc-400"
+                              className="gap-1.5 text-muted-foreground"
                             >
                               <RotateCcw className="h-3.5 w-3.5" /> Retry
                             </Button>
@@ -1358,18 +1360,18 @@ export default function App() {
                           onClick={advanceTeachingStep}
                           variant="ghost"
                           size="sm"
-                          className="gap-1.5 ml-auto text-zinc-400"
+                          className="gap-1.5 ml-auto text-muted-foreground"
                         >
                           Next <ChevronRight className="h-3.5 w-3.5" />
                         </Button>
                       </div>
 
                       {/* Step list */}
-                      <div className="pt-3 border-t border-zinc-700/50 space-y-1.5">
+                      <div className="pt-3 border-t border-border/50 space-y-1.5">
                         {TEACHING_STEPS.map((step, i) => (
                           <div
                             key={`step-${i}`}
-                            className={`flex items-center gap-2 text-xs py-1 px-2 rounded transition-colors cursor-pointer hover:bg-zinc-800/50 ${
+                            className={`flex items-center gap-2 text-xs py-1 px-2 rounded transition-colors cursor-pointer hover:bg-muted/50 ${
                               i === currentStep ? 'bg-indigo-500/10 text-indigo-400' :
                               i < currentStep ? 'text-green-400/70' :
                               'text-zinc-500'
@@ -1381,7 +1383,7 @@ export default function App() {
                             <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold border ${
                               i < currentStep ? 'bg-green-500/20 border-green-500/30' :
                               i === currentStep ? 'bg-indigo-500/20 border-indigo-500/30' :
-                              'border-zinc-600/30'
+                              'border-border/30'
                             }`}>
                               {i < currentStep ? '\u2713' : i + 1}
                             </span>
@@ -1391,10 +1393,10 @@ export default function App() {
                       </div>
 
                       {/* Keyboard hints */}
-                      <div className="pt-3 border-t border-zinc-700/50 space-y-2">
-                        <div className="flex items-start gap-2 text-xs text-zinc-400">
+                      <div className="pt-3 border-t border-border/50 space-y-2">
+                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
                           <Keyboard className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                          <p>Type the expected key to execute. <b className="text-zinc-300">Space</b> = Show Me. <b className="text-zinc-300">n</b> = Next. <b className="text-zinc-300">Esc</b> = Exit.</p>
+                          <p>Type the expected key to execute. <b className="text-foreground/80">Space</b> = Show Me. <b className="text-foreground/80">n</b> = Next. <b className="text-foreground/80">Esc</b> = Exit.</p>
                         </div>
                       </div>
                     </div>
@@ -1423,10 +1425,10 @@ export default function App() {
             >
               <Trophy className="mx-auto text-yellow-400 mb-4" size={56} />
               <h2 className="text-3xl font-bold mb-2 text-white">Solved!</h2>
-              <p className="text-zinc-400 mb-1">
+              <p className="text-muted-foreground mb-1">
                 Completed in <span className="font-mono font-bold text-white">{moveCount}</span> moves
               </p>
-              <p className="text-zinc-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Time: <span className="font-mono font-bold text-white">{formatTime(time)}</span>
               </p>
               <div className="flex gap-3 justify-center">

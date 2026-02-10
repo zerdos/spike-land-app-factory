@@ -172,7 +172,7 @@ const Cube = ({ moves, onMoveEnd }: { moves: MoveData[]; onMoveEnd: () => void }
   );
 };
 
-export default function RubiksGame() {
+export default function App() {
   const [moveQueue, setMoveQueue] = useState<MoveData[]>([]);
   const [moveCount, setMoveCount] = useState(0);
   const [timer, setTimer] = useState(0);
@@ -238,27 +238,27 @@ export default function RubiksGame() {
   };
 
   return (
-    <div className="w-full h-screen bg-neutral-900 flex flex-col font-sans text-white overflow-hidden">
+    <div className="w-full h-screen bg-background flex flex-col font-sans text-foreground overflow-hidden">
       {/* Header */}
-      <header className="p-4 bg-neutral-800 border-b border-neutral-700 flex justify-between items-center">
+      <header className="p-4 bg-card border-b border-border flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold">R</div>
           <h1 className="text-xl font-bold tracking-tight">RUBIK'S <span className="text-blue-500">3D</span></h1>
         </div>
         <div className="flex gap-6">
           <div className="flex flex-col items-center">
-            <span className="text-[10px] uppercase text-neutral-400 font-bold tracking-widest">Moves</span>
+            <span className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Moves</span>
             <span className="text-lg font-mono font-bold">{moveCount}</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-[10px] uppercase text-neutral-400 font-bold tracking-widest">Time</span>
+            <span className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Time</span>
             <span className="text-lg font-mono font-bold">{formatTime(timer)}</span>
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={shuffle}
-            className="p-2 hover:bg-neutral-700 rounded-lg transition-colors flex items-center gap-2 text-sm font-semibold"
+            className="p-2 hover:bg-muted rounded-lg transition-colors flex items-center gap-2 text-sm font-semibold"
             title="Shuffle"
           >
             <Shuffle size={18} />
@@ -266,7 +266,7 @@ export default function RubiksGame() {
           </button>
           <button
             onClick={reset}
-            className="p-2 hover:bg-neutral-700 rounded-lg transition-colors"
+            className="p-2 hover:bg-muted rounded-lg transition-colors"
             title="Reset"
           >
             <RotateCcw size={18} />
@@ -277,11 +277,11 @@ export default function RubiksGame() {
       {/* Main Game Area */}
       <div className="flex-1 relative flex flex-col lg:flex-row">
         {/* Controls Overlay - Left */}
-        <div className="absolute top-4 left-4 z-10 hidden md:flex flex-col gap-2 bg-black/40 p-4 rounded-xl backdrop-blur-md border border-white/10">
-          <h3 className="text-xs font-bold text-neutral-400 uppercase mb-2 flex items-center gap-1">
+        <div className="absolute top-4 left-4 z-10 hidden md:flex flex-col gap-2 bg-background/60 p-4 rounded-xl backdrop-blur-md border border-border">
+          <h3 className="text-xs font-bold text-muted-foreground uppercase mb-2 flex items-center gap-1">
             <Info size={12} /> Instructions
           </h3>
-          <p className="text-xs text-neutral-300 max-w-[150px] leading-relaxed">
+          <p className="text-xs text-muted-foreground max-w-[150px] leading-relaxed">
             Drag the cube to rotate the view. Use the buttons below to rotate slices.
           </p>
         </div>
@@ -300,10 +300,10 @@ export default function RubiksGame() {
         </div>
 
         {/* Rotation Controls */}
-        <div className="p-4 bg-neutral-800/50 border-t lg:border-t-0 lg:border-l border-neutral-700 flex flex-wrap justify-center content-center gap-4 lg:w-64">
+        <div className="p-4 bg-card/50 border-t lg:border-t-0 lg:border-l border-border flex flex-wrap justify-center content-center gap-4 lg:w-64">
           <div className="grid grid-cols-3 gap-2">
             {/* Face Controls */}
-            <div className="col-span-3 text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-1">Faces</div>
+            <div className="col-span-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">Faces</div>
             <ControlButton label="U" onClick={() => addMove('y', 1, -1)} color="white" />
             <ControlButton label="D" onClick={() => addMove('y', -1, 1)} color="yellow" />
             <ControlButton label="L" onClick={() => addMove('x', -1, 1)} color="green" />
@@ -311,7 +311,7 @@ export default function RubiksGame() {
             <ControlButton label="F" onClick={() => addMove('z', 1, -1)} color="red" />
             <ControlButton label="B" onClick={() => addMove('z', -1, 1)} color="orange" />
 
-            <div className="col-span-3 text-[10px] font-bold text-neutral-500 uppercase tracking-widest mt-4 mb-1">Inverted</div>
+            <div className="col-span-3 text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-4 mb-1">Inverted</div>
             <ControlButton label="U'" onClick={() => addMove('y', 1, 1)} color="white" outline />
             <ControlButton label="D'" onClick={() => addMove('y', -1, -1)} color="yellow" outline />
             <ControlButton label="L'" onClick={() => addMove('x', -1, -1)} color="green" outline />
@@ -325,10 +325,10 @@ export default function RubiksGame() {
       {/* Win Modal (Simple) */}
       {isSolved && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="bg-neutral-800 p-8 rounded-2xl border border-blue-500/50 text-center animate-bounce">
+          <div className="bg-card p-8 rounded-2xl border border-primary/50 text-center animate-bounce">
             <Trophy className="mx-auto text-yellow-400 mb-4" size={64} />
             <h2 className="text-3xl font-bold mb-2">Solved!</h2>
-            <p className="text-neutral-400 mb-6">You completed the cube in {moveCount} moves.</p>
+            <p className="text-muted-foreground mb-6">You completed the cube in {moveCount} moves.</p>
             <button
               onClick={reset}
               className="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-full font-bold transition-all"
@@ -339,7 +339,7 @@ export default function RubiksGame() {
         </div>
       )}
 
-      <footer className="p-3 bg-neutral-900 text-[10px] text-neutral-500 text-center uppercase tracking-widest">
+      <footer className="p-3 bg-neutral-900 text-[10px] text-muted-foreground text-center uppercase tracking-widest">
         Interactive 3D Simulation &bull; Built with React Three Fiber
       </footer>
     </div>

@@ -372,7 +372,7 @@
     const AUTOSAVE_KEY = "sonic-alarm-autosave";
 
     // ─── Main Component ──────────────────────────────────────────────────
-    export default function AlarmSoundCreator() {
+    export default function App() {
         const { toasts, show: showToast, dismiss: dismissToast } = useToast();
 
         // State

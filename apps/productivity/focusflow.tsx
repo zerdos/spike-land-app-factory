@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Check, Trash2, Circle, ListTodo, Sparkles, Target, Undo2 } from "lucide-react";
+import { Plus, Check, Trash2, ListTodo, Sparkles, Target } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
@@ -18,9 +18,16 @@ const CATEGORIES = [
   { name: 'Health', emoji: '\u{1F4AA}' },
 ];
 
+interface Task {
+  id: number;
+  text: string;
+  category: string;
+  completed: boolean;
+}
+
 const STORAGE_KEY = 'focusflow-tasks';
 
-function loadTasks() {
+function loadTasks(): Task[] {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) return JSON.parse(saved);
@@ -37,7 +44,6 @@ export default function App() {
   const [input, setInput] = useState('');
   const [activeCategory, setActiveCategory] = useState('Work');
   const [filter, setFilter] = useState('all');
-  const [lastDeleted, setLastDeleted] = useState<{ id: number; text: string; category: string; completed: boolean } | null>(null);
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); } catch {}
@@ -56,7 +62,7 @@ export default function App() {
     return true;
   });
 
-  const addTask = (e: React.FormEvent) => {
+  const addTask = (e: FormEvent) => {
     e?.preventDefault();
     if (!input.trim()) return;
     const newTask = {
@@ -76,7 +82,6 @@ export default function App() {
 
   const deleteTask = (id: number) => {
     const task = tasks.find(t => t.id === id);
-    if (task) setLastDeleted(task);
     setTasks(tasks.filter(t => t.id !== id));
     toast.info('Task removed', {
       action: {
@@ -84,7 +89,6 @@ export default function App() {
         onClick: () => {
           if (task) {
             setTasks(prev => [task, ...prev]);
-            setLastDeleted(null);
             toast.success('Task restored');
           }
         },
@@ -97,7 +101,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 flex items-center justify-center" style={{ background: 'transparent' }}>
+    <div className="min-h-screen p-4 md:p-8 flex items-center justify-center bg-background">
       {/* Subtle dot pattern overlay */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04]"
@@ -109,7 +113,7 @@ export default function App() {
 
       <Toaster position="top-center" richColors />
 
-      <Card className="w-full max-w-xl border-border/40 shadow-2xl shadow-black/10 overflow-hidden relative" style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)' }}>
+      <Card className="w-full max-w-xl border-border/40 shadow-2xl shadow-black/10 overflow-hidden relative bg-background/80 backdrop-blur-xl">
         {/* Decorative top gradient bar */}
         <div className="h-1 w-full bg-gradient-to-r from-violet-500 via-blue-500 to-emerald-500" />
 
