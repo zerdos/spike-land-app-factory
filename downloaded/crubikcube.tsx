@@ -339,7 +339,7 @@ export default function App() {
         </div>
       )}
 
-      <footer className="p-3 bg-card border-t border-border text-[10px] text-muted-foreground text-center uppercase tracking-widest">
+      <footer className="p-3 bg-neutral-900 text-[10px] text-muted-foreground text-center uppercase tracking-widest">
         Interactive 3D Simulation &bull; Built with React Three Fiber
       </footer>
     </div>

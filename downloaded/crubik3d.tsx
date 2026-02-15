@@ -22,7 +22,7 @@ const STICKER_COLORS: Record<string, number> = {
 const BLACK_PLASTIC = 0x0a0a0a;
 
 const FACE_COLORS_CSS: Record<string, string> = {
-  U: 'bg-white text-black border border-border', D: 'bg-yellow-400 text-black',
+  U: 'bg-white text-black border border-zinc-300', D: 'bg-yellow-400 text-black',
   L: 'bg-orange-500 text-white', R: 'bg-red-700 text-white',
   F: 'bg-green-600 text-white', B: 'bg-blue-700 text-white',
 };
@@ -373,6 +373,13 @@ export default function App() {
   const pointerUpTimeRef = useRef(0);
   const showMeModeRef = useRef(false);
   const currentStepRef = useRef(0);
+
+  // Apply dark class for dark mode styling
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!root.classList.contains('dark')) root.classList.add('dark');
+    return () => {};
+  }, []);
 
   // Keep refs in sync
   useEffect(() => { modeRef.current = mode; }, [mode]);
@@ -995,22 +1002,22 @@ export default function App() {
   const currentTeachingStep = TEACHING_STEPS[currentStep];
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4 md:p-8 flex flex-col items-center gap-6">
+    <div className="min-h-screen bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 text-zinc-100 p-4 md:p-8 flex flex-col items-center gap-6">
       <header className="w-full max-w-5xl flex justify-between items-center">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2 text-foreground">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2 text-white">
             <Zap className="text-indigo-400 fill-indigo-400" /> Rubik&apos;s Cube 3D
           </h1>
           <p className="text-muted-foreground text-sm font-medium">Photorealistic Cube Simulator</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Time</p>
-            <p className="text-2xl font-mono font-bold text-foreground">{formatTime(time)}</p>
+            <p className="text-xs text-zinc-500 uppercase font-bold tracking-widest">Time</p>
+            <p className="text-2xl font-mono font-bold text-white">{formatTime(time)}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Moves</p>
-            <p className="text-2xl font-mono font-bold text-foreground">{moveCount}</p>
+            <p className="text-xs text-zinc-500 uppercase font-bold tracking-widest">Moves</p>
+            <p className="text-2xl font-mono font-bold text-white">{moveCount}</p>
           </div>
         </div>
       </header>
@@ -1040,11 +1047,11 @@ export default function App() {
                 <Progress value={solveProgress} className="h-1.5" />
                 <div className="flex gap-1 mt-2 flex-wrap">
                   {solveQueue.slice(0, 12).map((m, i) => (
-                    <span key={`solve-${i}`} className={`font-mono text-xs px-1.5 py-0.5 rounded ${i === 0 ? 'bg-indigo-500 text-white font-bold' : 'bg-muted text-muted-foreground'}`}>
+                    <span key={`solve-${i}`} className={`font-mono text-xs px-1.5 py-0.5 rounded ${i === 0 ? 'bg-indigo-500 text-white font-bold' : 'bg-zinc-800 text-muted-foreground'}`}>
                       {m}
                     </span>
                   ))}
-                  {solveQueue.length > 12 && <span className="text-xs text-muted-foreground">+{solveQueue.length - 12}</span>}
+                  {solveQueue.length > 12 && <span className="text-xs text-zinc-500">+{solveQueue.length - 12}</span>}
                 </div>
               </motion.div>
             )}
@@ -1067,7 +1074,7 @@ export default function App() {
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         i < algorithmIndex ? 'bg-green-500' :
                         i === algorithmIndex ? 'bg-indigo-500 scale-125' :
-                        'bg-muted-foreground/50'
+                        'bg-zinc-600'
                       }`}
                     />
                   ))}
@@ -1085,7 +1092,7 @@ export default function App() {
                   className={`px-6 py-3 rounded-xl font-mono text-2xl font-bold border-2 transition-colors duration-300 ${
                     feedbackType === 'correct' ? 'bg-green-500/20 border-green-500/50 text-green-400' :
                     feedbackType === 'wrong' ? 'bg-amber-500/20 border-amber-500/50 text-amber-400' :
-                    'bg-card/80 border-indigo-500/30 text-foreground'
+                    'bg-card/80 border-indigo-500/30 text-white'
                   }`}
                 >
                   {algorithmIndex < currentAlgorithm.length ? (
@@ -1172,7 +1179,7 @@ export default function App() {
                   </h3>
                   <div className="flex flex-wrap gap-1.5 min-h-[50px] p-3 rounded-lg bg-muted/50 border border-border/30">
                     <AnimatePresence mode="popLayout">
-                      {moveHistory.length === 0 && <span className="text-muted-foreground text-xs italic">No moves yet...</span>}
+                      {moveHistory.length === 0 && <span className="text-zinc-500 text-xs italic">No moves yet...</span>}
                       {moveHistory.map((m, i) => (
                         <motion.span
                           key={`${m}-${i}-${moveCount}`}
@@ -1208,7 +1215,7 @@ export default function App() {
                     className="text-center py-8 space-y-4"
                   >
                     <Trophy className="mx-auto text-yellow-400" size={48} />
-                    <h3 className="text-xl font-bold text-foreground">Congratulations</h3>
+                    <h3 className="text-xl font-bold text-white">Congratulations</h3>
                     <p className="text-sm text-muted-foreground">You&apos;ve learned the beginner method.</p>
                     <Button onClick={enterTeachingMode} variant="outline" size="sm" className="gap-2">
                       <RotateCcw className="h-3.5 w-3.5" /> Start Over
@@ -1232,7 +1239,7 @@ export default function App() {
 
                       {/* Step name + goal */}
                       <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/20 p-3 space-y-1">
-                        <h3 className="font-bold text-lg flex items-center gap-2 text-foreground">
+                        <h3 className="font-bold text-lg flex items-center gap-2 text-white">
                           <Zap className="h-4 w-4 text-indigo-400" />
                           {currentTeachingStep?.name}
                         </h3>
@@ -1269,16 +1276,16 @@ export default function App() {
                             {currentTeachingStep.algorithms.map((algo, i) => (
                               <div key={`algo-${i}`} className="rounded-lg bg-muted/60 border border-border/40 p-3 space-y-1.5">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-foreground">{algo.name}</span>
+                                  <span className="text-sm font-semibold text-white">{algo.name}</span>
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {algo.notation.map((m, j) => (
-                                    <span key={`n-${j}`} className="font-mono text-sm px-2 py-0.5 rounded bg-muted/50 text-indigo-300">
+                                    <span key={`n-${j}`} className="font-mono text-sm px-2 py-0.5 rounded bg-zinc-700/50 text-indigo-300">
                                       {m}
                                     </span>
                                   ))}
                                 </div>
-                                <p className="text-xs text-muted-foreground italic">{algo.when}</p>
+                                <p className="text-xs text-zinc-500 italic">{algo.when}</p>
                               </div>
                             ))}
                           </div>
@@ -1311,7 +1318,7 @@ export default function App() {
                                 className={`font-mono text-sm px-2 py-1 rounded transition-all duration-300 ${
                                   i < algorithmIndex ? 'bg-green-500/20 text-green-400' :
                                   i === algorithmIndex ? 'bg-indigo-500/20 text-indigo-400 font-bold ring-1 ring-indigo-500/30' :
-                                  'bg-muted/30 text-muted-foreground'
+                                  'bg-zinc-700/30 text-zinc-500'
                                 }`}
                               >
                                 {m}
@@ -1367,7 +1374,7 @@ export default function App() {
                             className={`flex items-center gap-2 text-xs py-1 px-2 rounded transition-colors cursor-pointer hover:bg-muted/50 ${
                               i === currentStep ? 'bg-indigo-500/10 text-indigo-400' :
                               i < currentStep ? 'text-green-400/70' :
-                              'text-muted-foreground'
+                              'text-zinc-500'
                             }`}
                             onClick={() => {
                               if (i !== currentStep) enterTeachingStep(i);
@@ -1414,15 +1421,15 @@ export default function App() {
               initial={{ scale: 0.8, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 20 }}
-              className="bg-card p-8 rounded-2xl border border-indigo-500/30 shadow-2xl text-center max-w-sm mx-4"
+              className="bg-zinc-900 p-8 rounded-2xl border border-indigo-500/30 shadow-2xl text-center max-w-sm mx-4"
             >
               <Trophy className="mx-auto text-yellow-400 mb-4" size={56} />
-              <h2 className="text-3xl font-bold mb-2 text-foreground">Solved!</h2>
+              <h2 className="text-3xl font-bold mb-2 text-white">Solved!</h2>
               <p className="text-muted-foreground mb-1">
-                Completed in <span className="font-mono font-bold text-foreground">{moveCount}</span> moves
+                Completed in <span className="font-mono font-bold text-white">{moveCount}</span> moves
               </p>
               <p className="text-muted-foreground mb-6">
-                Time: <span className="font-mono font-bold text-foreground">{formatTime(time)}</span>
+                Time: <span className="font-mono font-bold text-white">{formatTime(time)}</span>
               </p>
               <div className="flex gap-3 justify-center">
                 <Button onClick={scramble} className="gap-2">
@@ -1435,7 +1442,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      <footer className="text-center text-muted-foreground text-xs pb-4">
+      <footer className="text-center text-zinc-500 text-xs pb-4">
         Built with Three.js &amp; React
       </footer>
     </div>

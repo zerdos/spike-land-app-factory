@@ -6,10 +6,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:02:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:10.667Z",
       "codeSpaceId": "crubik3d",
       "lastSyncHash": "bQWgCMbQ",
-      "liveUrl": "https://testing.spike.land/live/crubik3d"
+      "liveUrl": "https://testing.spike.land/live/crubik3d",
+      "localFileHash": "9b92a653ac93edfde90981aabda54648"
     },
     "rubik-cube": {
       "name": "rubik-cube",
@@ -17,10 +18,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-06T23:00:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:11.503Z",
       "codeSpaceId": "crubikcube",
       "lastSyncHash": "EnsZjEns",
-      "liveUrl": "https://testing.spike.land/live/crubikcube"
+      "liveUrl": "https://testing.spike.land/live/crubikcube",
+      "localFileHash": "b838582194042c9abd17732ef7e7dd23"
     },
     "alarm-studio": {
       "name": "alarm-studio",
@@ -28,10 +30,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-08T11:54:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:13.090Z",
       "codeSpaceId": "calarmstudio",
       "lastSyncHash": "zm99zm99",
-      "liveUrl": "https://testing.spike.land/live/calarmstudio"
+      "liveUrl": "https://testing.spike.land/live/calarmstudio",
+      "localFileHash": "eb816a53ac60162d08c1aec378303dd3"
     },
     "social-canvas": {
       "name": "social-canvas",
@@ -39,10 +42,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T21:33:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:14.378Z",
       "codeSpaceId": "csocialcanvas",
       "lastSyncHash": "bkDT77bk",
-      "liveUrl": "https://testing.spike.land/live/csocialcanvas"
+      "liveUrl": "https://testing.spike.land/live/csocialcanvas",
+      "localFileHash": "e816a183233ff06a72535aa0cca508f5"
     },
     "focusflow": {
       "name": "focusflow",
@@ -50,10 +54,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:49:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:14.613Z",
       "codeSpaceId": "c-focusflow",
       "lastSyncHash": "aEDt55aE",
-      "liveUrl": "https://testing.spike.land/live/c-focusflow"
+      "liveUrl": "https://testing.spike.land/live/c-focusflow",
+      "localFileHash": "2f75f9aa5345729a186fdc6ba1794473"
     },
     "sid-thai-adventure": {
       "name": "sid-thai-adventure",
@@ -61,10 +66,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-08T11:55:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:15.122Z",
       "codeSpaceId": "c-419f2869",
       "lastSyncHash": "HMiK0HMi",
-      "liveUrl": "https://testing.spike.land/live/c-419f2869"
+      "liveUrl": "https://testing.spike.land/live/c-419f2869",
+      "localFileHash": "f2f9f3f3d3d81cb27eedddcb3a96219e"
     },
     "leave-it-training": {
       "name": "leave-it-training",
@@ -72,10 +78,11 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-08T11:55:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:15.442Z",
       "codeSpaceId": "c-47a5893f",
       "lastSyncHash": "cbErYRcb",
-      "liveUrl": "https://testing.spike.land/live/c-47a5893f"
+      "liveUrl": "https://testing.spike.land/live/c-47a5893f",
+      "localFileHash": "90173175011297ace8594f0e1fbce968"
     },
     "subscription-update": {
       "name": "subscription-update",
@@ -83,11 +90,12 @@
       "phase": "complete",
       "attempts": 0,
       "createdAt": "2026-02-09T07:38:00.000Z",
-      "updatedAt": "2026-02-10T12:00:00.000Z",
+      "updatedAt": "2026-02-11T04:31:16.131Z",
       "codeSpaceId": "csubscriptionupdate",
       "lastSyncHash": "bpRdl8bp",
-      "liveUrl": "https://testing.spike.land/live/csubscriptionupdate"
+      "liveUrl": "https://testing.spike.land/live/csubscriptionupdate",
+      "localFileHash": "8d36ac9ec24c8979c55e1631307612dd"
     }
   },
-  "lastUpdated": "2026-02-10T18:00:00.000Z"
+  "lastUpdated": "2026-02-11T04:31:16.132Z"
 }
